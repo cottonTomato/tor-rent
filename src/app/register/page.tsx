@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Home, Key, User, Mail, Camera, Phone, Loader2, CheckCircle, Building, Search } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 const RegistrationPage = () => {
   const [step, setStep] = useState(1);
@@ -15,10 +16,15 @@ const RegistrationPage = () => {
   const [otp, setOtp] = useState(['', '', '', '']);
   const [isVerifying, setIsVerifying] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
+  const router = useRouter();
 
-  const handleRoleSelect = (selectedRole) => {
+  const handleRoleSelect = (selectedRole: any) => {
     setRole(selectedRole);
-    setStep(2);
+    if (role === 'tenant') {
+      router.push('/tenant-dashboard');
+    } else if (role === 'landlord') {
+      router.push('/dashboard');
+    }
   };
 
   const handleFileUpload = async (e) => {
@@ -93,7 +99,7 @@ const RegistrationPage = () => {
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 className="bg-gray-100/10 p-8 rounded-xl backdrop-blur-sm cursor-pointer"
-                onClick={() => handleRoleSelect('tenant')}
+                onClick={() => router.push('/tenant-dashboard')}
               >
                 <div className="bg-blue-500/10 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                   <Search className="w-8 h-8 text-blue-400" />
@@ -106,7 +112,7 @@ const RegistrationPage = () => {
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 className="bg-gray-100/10 p-8 rounded-xl backdrop-blur-sm cursor-pointer"
-                onClick={() => handleRoleSelect('landlord')}
+                onClick={() => router.push('/dashboard')}
               >
                 <div className="bg-purple-500/10 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                   <Building className="w-8 h-8 text-purple-400" />
@@ -117,102 +123,6 @@ const RegistrationPage = () => {
             </div>
           </div>
         )}
-
-        {/* Step 2: Personal Information */}
-        {step === 2 && (
-          <div className="max-w-md mx-auto">
-            <h2 className="text-2xl font-semibold mb-6">Personal Information</h2>
-            <div className="space-y-6">
-              <div>
-                <label className="block text-gray-400 mb-2">Full Name</label>
-                <input
-                  type="text"
-                  className="w-full bg-gray-800/30 rounded-lg p-3 border border-gray-700 focus:border-blue-500 focus:outline-none"
-                  value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
-                />
-              </div>
-              <div>
-                <label className="block text-gray-400 mb-2">Email</label>
-                <input
-                  type="email"
-                  className="w-full bg-gray-800/30 rounded-lg p-3 border border-gray-700 focus:border-blue-500 focus:outline-none"
-                  value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
-                />
-              </div>
-              <div>
-                <label className="block text-gray-400 mb-2">Upload Aadhar Card</label>
-                <div className="relative">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileUpload}
-                    className="hidden"
-                    id="aadhar-upload"
-                  />
-                  <label
-                    htmlFor="aadhar-upload"
-                    className="w-full bg-gray-800/30 rounded-lg p-6 border-2 border-dashed border-gray-700 flex flex-col items-center cursor-pointer hover:border-blue-500 transition-colors"
-                  >
-                    <Camera className="w-8 h-8 mb-2 text-gray-400" />
-                    <span className="text-gray-400">Click to upload</span>
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Step 3: OTP Verification */}
-        {step === 3 && (
-          <div className="max-w-md mx-auto text-center">
-            <h2 className="text-2xl font-semibold mb-6">Verify Your Phone</h2>
-            <p className="text-gray-400 mb-8">Enter the OTP sent to {formData.phone}</p>
-            
-            <div className="flex justify-center space-x-4 mb-8">
-              {otp.map((digit, index) => (
-                <input
-                  key={index}
-                  id={`otp-${index}`}
-                  type="text"
-                  maxLength="1"
-                  className="w-12 h-12 text-center bg-gray-800/30 rounded-lg border border-gray-700 focus:border-blue-500 focus:outline-none text-xl"
-                  value={digit}
-                  onChange={(e) => handleOtpChange(e.target.value, index)}
-                />
-              ))}
-            </div>
-
-            {isVerifying && (
-              <div className="flex items-center justify-center">
-                <Loader2 className="w-6 h-6 animate-spin mr-2" />
-                <span>Verifying...</span>
-              </div>
-            )}
-
-            {isVerified && (
-              <div className="flex items-center justify-center text-green-500">
-                <CheckCircle className="w-6 h-6 mr-2" />
-                <span>Verified! Redirecting...</span>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Progress Indicator */}
-        <div className="mt-12 flex justify-center">
-          <div className="flex items-center space-x-4">
-            {[1, 2, 3].map((stepNumber) => (
-              <div
-                key={stepNumber}
-                className={`w-3 h-3 rounded-full ${
-                  step >= stepNumber ? 'bg-blue-500' : 'bg-gray-700'
-                }`}
-              />
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   );

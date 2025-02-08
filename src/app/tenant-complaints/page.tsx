@@ -14,26 +14,24 @@ export default function ComplaintsPage() {
         const querySnapshot = await getDocs(collection(db, "conflict_resolution"));
         const complaintsList = querySnapshot.docs.map((doc) => {
           const data = doc.data();
-          console.log("Rcvd",data);
+          console.log("Rcvd", data);
           return {
             id: doc.id,
+            sender: data?.sender || "Tenant's message",
             title: `Issue ID: ${data.issue_id || "Issue - 2/8/2025"}`,
             status: data.resolved_at ? "Resolved" : "Under Review",
             mediator: data.mediator || "Admin",
             landlordReply: data.resolution_notes || "Awaiting landlord response.",
-            chat: [
-              { sender: "Tenant", message: "Tenant reported an issue." },
-              { sender: "Landlord", message: data.resolution_notes || "Awaiting landlord response." },
-            ],
             resolution: data.resolved_at
               ? `Resolved on ${new Date(data.resolved_at.seconds * 1000).toLocaleString()}`
               : "Pending",
-              imageUrl: data.image && data.image.trim() !== "" 
+            imageUrl: data.image && data.image.trim() !== ""
               ? data.image
               : "",
-            
+
           };
         });
+        
         setComplaints(complaintsList);
       } catch (error) {
         console.error("Error fetching complaints:", error);
@@ -41,6 +39,11 @@ export default function ComplaintsPage() {
     };
     fetchComplaints();
   }, []);
+
+  const handleSelectedComplaint = (complaint) => { 
+    console.log("Selected Complaint:", complaint);
+    setSelectedComplaint(complaint); 
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black to-gray-900 text-white p-6 flex flex-col items-center">
@@ -53,18 +56,16 @@ export default function ComplaintsPage() {
               key={complaint.id}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className={`p-4 mb-4 rounded-lg cursor-pointer transition-all duration-300 ${
-                selectedComplaint?.id === complaint.id ? "bg-gray-900" : "bg-gray-700"
-              }`}
-              onClick={() => setSelectedComplaint(complaint)}
-            >
-              <h2 className="text-xl font-semibold">{complaint.title}</h2>
-              <p
-                className={`text-sm font-medium mt-1 py-1 px-2 inline-block rounded-md ${
-                  complaint.status === "Resolved" ? "bg-green-500" : "bg-yellow-500"
+              className={`p-4 mb-4 rounded-lg cursor-pointer transition-all duration-300 ${selectedComplaint?.id === complaint.id ? "bg-gray-900" : "bg-gray-700"
                 }`}
+              onClick={() => handleSelectedComplaint(complaint)}
+            >
+              <h2 className="text-xl font-semibold">{complaint?.title}</h2>
+              <p
+                className={`text-sm font-medium mt-1 py-1 px-2 inline-block rounded-md ${complaint?.status === "Resolved" ? "bg-green-500" : "bg-yellow-500"
+                  }`}
               >
-                {complaint.status}
+                {complaint?.status}
               </p>
             </motion.div>
           ))}
@@ -96,16 +97,9 @@ export default function ComplaintsPage() {
 
               <h3 className="mt-6 text-lg font-semibold">Chat</h3>
               <div className="bg-gray-700 p-4 rounded-lg max-h-40 overflow-auto border border-gray-600">
-                {selectedComplaint.chat.map((msg, index) => (
-                  <p
-                    key={index}
-                    className={`text-sm mt-1 ${msg.sender === "Tenant" ? "text-blue-400" : "text-green-400"}`}
-                  >
-                    <strong>{msg.sender}: </strong>
-                    {msg.message}
-                  </p>
-                ))}
+              <p className="font-semibold">Sender's message: {selectedComplaint.sender}</p>
               </div>
+
               <p className="mt-4 text-green-400 font-semibold">Resolution: {selectedComplaint.resolution}</p>
             </motion.div>
           ) : (

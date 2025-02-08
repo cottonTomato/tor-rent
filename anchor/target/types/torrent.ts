@@ -14,6 +14,40 @@ export type Torrent = {
   },
   "instructions": [
     {
+      "name": "attemptAutoDeduction",
+      "discriminator": [
+        93,
+        1,
+        188,
+        5,
+        82,
+        193,
+        161,
+        243
+      ],
+      "accounts": [
+        {
+          "name": "rentalAgreement",
+          "writable": true
+        },
+        {
+          "name": "tenant",
+          "writable": true,
+          "relations": [
+            "rentalAgreement"
+          ]
+        },
+        {
+          "name": "landlord",
+          "writable": true,
+          "relations": [
+            "rentalAgreement"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "createAgreement",
       "discriminator": [
         220,
@@ -66,6 +100,105 @@ export type Torrent = {
       ]
     },
     {
+      "name": "payRent",
+      "discriminator": [
+        69,
+        155,
+        112,
+        183,
+        178,
+        234,
+        94,
+        100
+      ],
+      "accounts": [
+        {
+          "name": "rentalAgreement",
+          "writable": true
+        },
+        {
+          "name": "tenant",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "rentalAgreement"
+          ]
+        },
+        {
+          "name": "landlord",
+          "writable": true,
+          "relations": [
+            "rentalAgreement"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "resolveMaintenanceRequest",
+      "discriminator": [
+        255,
+        201,
+        45,
+        244,
+        181,
+        1,
+        132,
+        179
+      ],
+      "accounts": [
+        {
+          "name": "rentalAgreement",
+          "writable": true
+        },
+        {
+          "name": "landlord",
+          "signer": true,
+          "relations": [
+            "rentalAgreement"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "requestIndex",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "submitMaintenanceRequest",
+      "discriminator": [
+        85,
+        11,
+        127,
+        211,
+        67,
+        168,
+        85,
+        7
+      ],
+      "accounts": [
+        {
+          "name": "rentalAgreement",
+          "writable": true
+        },
+        {
+          "name": "tenant",
+          "signer": true,
+          "relations": [
+            "rentalAgreement"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "description",
+          "type": "string"
+        }
+      ]
+    },
+    {
       "name": "terminateAgreement",
       "discriminator": [
         208,
@@ -93,7 +226,10 @@ export type Torrent = {
         {
           "name": "tenant",
           "writable": true,
-          "signer": true
+          "signer": true,
+          "relations": [
+            "rentalAgreement"
+          ]
         },
         {
           "name": "systemProgram",
@@ -121,7 +257,6 @@ export type Torrent = {
         },
         {
           "name": "landlord",
-          "writable": true,
           "signer": true,
           "relations": [
             "rentalAgreement"
@@ -129,8 +264,10 @@ export type Torrent = {
         },
         {
           "name": "tenant",
-          "writable": true,
-          "signer": true
+          "signer": true,
+          "relations": [
+            "rentalAgreement"
+          ]
         }
       ],
       "args": [
@@ -176,7 +313,348 @@ export type Torrent = {
       ]
     }
   ],
+  "events": [
+    {
+      "name": "agreementCreated",
+      "discriminator": [
+        131,
+        148,
+        204,
+        18,
+        83,
+        92,
+        57,
+        18
+      ]
+    },
+    {
+      "name": "agreementDefaulted",
+      "discriminator": [
+        72,
+        169,
+        50,
+        102,
+        162,
+        201,
+        73,
+        131
+      ]
+    },
+    {
+      "name": "agreementTerminated",
+      "discriminator": [
+        100,
+        113,
+        135,
+        45,
+        62,
+        124,
+        25,
+        183
+      ]
+    },
+    {
+      "name": "agreementUpdated",
+      "discriminator": [
+        96,
+        59,
+        191,
+        31,
+        127,
+        151,
+        49,
+        237
+      ]
+    },
+    {
+      "name": "maintenanceRequestResolved",
+      "discriminator": [
+        202,
+        66,
+        224,
+        79,
+        163,
+        242,
+        220,
+        191
+      ]
+    },
+    {
+      "name": "maintenanceRequestSubmitted",
+      "discriminator": [
+        152,
+        112,
+        15,
+        186,
+        191,
+        243,
+        20,
+        130
+      ]
+    },
+    {
+      "name": "rentPaid",
+      "discriminator": [
+        140,
+        29,
+        172,
+        69,
+        152,
+        38,
+        73,
+        241
+      ]
+    },
+    {
+      "name": "rentPaymentFailed",
+      "discriminator": [
+        115,
+        195,
+        101,
+        11,
+        34,
+        43,
+        244,
+        40
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "agreementInactive",
+      "msg": "Rental agreement is inactive."
+    },
+    {
+      "code": 6001,
+      "name": "paymentNotDue",
+      "msg": "Rent payment is not due yet."
+    },
+    {
+      "code": 6002,
+      "name": "invalidAmount",
+      "msg": "Invalid amount specified."
+    },
+    {
+      "code": 6003,
+      "name": "invalidDuration",
+      "msg": "Invalid duration specified."
+    },
+    {
+      "code": 6004,
+      "name": "invalidIpfsCid",
+      "msg": "Invalid IPFS CID length."
+    },
+    {
+      "code": 6005,
+      "name": "contractExpired",
+      "msg": "Contract has expired."
+    },
+    {
+      "code": 6006,
+      "name": "unauthorizedTermination",
+      "msg": "Unauthorized termination attempt."
+    },
+    {
+      "code": 6007,
+      "name": "invalidDescription",
+      "msg": "Invalid maintenance request description length."
+    },
+    {
+      "code": 6008,
+      "name": "invalidRequestIndex",
+      "msg": "Invalid maintenance request index."
+    }
+  ],
   "types": [
+    {
+      "name": "agreementCreated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "landlord",
+            "type": "pubkey"
+          },
+          {
+            "name": "tenant",
+            "type": "pubkey"
+          },
+          {
+            "name": "rentAmount",
+            "type": "u64"
+          },
+          {
+            "name": "depositAmount",
+            "type": "u64"
+          },
+          {
+            "name": "durationMonths",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "agreementDefaulted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agreement",
+            "type": "pubkey"
+          },
+          {
+            "name": "missedPayments",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "agreementTerminated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agreement",
+            "type": "pubkey"
+          },
+          {
+            "name": "remainingDeposit",
+            "type": "u64"
+          },
+          {
+            "name": "deductions",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "agreementUpdated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agreement",
+            "type": "pubkey"
+          },
+          {
+            "name": "rentAmount",
+            "type": "u64"
+          },
+          {
+            "name": "depositAmount",
+            "type": "u64"
+          },
+          {
+            "name": "durationMonths",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "maintenanceRequest",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "isResolved",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "maintenanceRequestResolved",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agreement",
+            "type": "pubkey"
+          },
+          {
+            "name": "requestIndex",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "maintenanceRequestSubmitted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agreement",
+            "type": "pubkey"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rentPaid",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agreement",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "autoDeducted",
+            "type": "bool"
+          },
+          {
+            "name": "paymentDate",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rentPaymentFailed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agreement",
+            "type": "pubkey"
+          },
+          {
+            "name": "requiredAmount",
+            "type": "u64"
+          },
+          {
+            "name": "availableBalance",
+            "type": "u64"
+          },
+          {
+            "name": "missedPayments",
+            "type": "u8"
+          }
+        ]
+      }
+    },
     {
       "name": "rentalAgreement",
       "type": {
@@ -203,12 +681,38 @@ export type Torrent = {
             "type": "u8"
           },
           {
+            "name": "startDate",
+            "type": "i64"
+          },
+          {
+            "name": "nextPaymentDate",
+            "type": "i64"
+          },
+          {
+            "name": "lastPaymentDate",
+            "type": "i64"
+          },
+          {
             "name": "ipfsCid",
             "type": "string"
           },
           {
             "name": "isActive",
             "type": "bool"
+          },
+          {
+            "name": "missedPayments",
+            "type": "u8"
+          },
+          {
+            "name": "maintenanceRequests",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "maintenanceRequest"
+                }
+              }
+            }
           }
         ]
       }
