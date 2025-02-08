@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import {
     Search, Filter, MapPin, Home, DollarSign,
     Bath, BedDouble, Maximize, PawPrint,
-    Star, ChevronRight, Calendar, Shield,
+    Star, ChevronRight, Calendar1Icon, Shield,
     Plus, Minus, CheckCircle
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,8 +26,55 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Label } from '@radix-ui/react-label';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+import "./calendar.css";
 
 const PropertyListings = () => {
+
+    const [open, setOpen] = useState(false);
+    const [date, setDate] = useState(new Date());
+
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+    const handleConfirm = async () => {
+        const userInput = window.prompt("Enter event details:");
+    
+        if (!userInput) {
+            alert("Event details are required!");
+            return;
+        }
+    
+        const isConfirmed = window.confirm(`Do you want to schedule this event: "${userInput}" around ${date.toDateString()}?`);
+    
+        if (isConfirmed) {
+            try {
+                const response = await fetch("https://piyanshu.app.n8n.cloud/webhook/7e474783-7445-43b6-a753-c9ce141e082c", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ scheduledDate: date, eventDetails: userInput })
+                });
+    
+                console.log("Response:", response);
+    
+                if (response.ok) {
+                    alert("Schedule confirmed!");
+                    handleClose();
+                } else {
+                    alert("Failed to schedule. Please try again.");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred. Please try again.");
+            }
+        }
+    };
+      
+
+
     // State management
     const [searchQuery, setSearchQuery] = useState('');
     const [filters, setFilters] = useState({
@@ -74,6 +121,7 @@ const PropertyListings = () => {
             total: property.price + property.deposit + serviceFee
         };
     };
+
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
@@ -324,13 +372,39 @@ const PropertyListings = () => {
                                                         {/* Apply Button */}
                                                         <Button
                                                             className="w-full bg-blue-600 hover:bg-blue-700"
-                                                            onClick={() => {
-                                                                window.location.href = "/tenant-agreement"; // Redirect to the agreement page
-                                                            }}
+                                                            onClick={handleOpen}
                                                         >
-                                                            Apply for Rental
+                                                            Schedule a visit
                                                         </Button>
-
+                                                        {open && (
+                                                        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                                                            <div className="bg-gray-900 p-6 rounded-lg shadow-lg w-80">
+                                                                <h2 className="text-lg font-semibold text-white mb-4">Select Visit Date</h2>
+                                                                <div className="w-full border border-gray-700 rounded p-2">
+                                                                    <Calendar
+                                                                        onChange={setDate}
+                                                                        value={date}
+                                                                        className="dark-calendar"
+                                                                    />
+                                                                </div>
+                                                                <div className="mt-4 flex justify-end gap-2">
+                                                                    <button
+                                                                        onClick={handleClose}
+                                                                        className="bg-gray-700 text-white py-2 px-4 rounded hover:bg-gray-600"
+                                                                    >
+                                                                        Cancel
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={handleConfirm}
+                                                                        className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded"
+                                                                    >
+                                                                        Confirm
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        )
+                                                    }
                                                     </div>
                                                 </DialogContent>
                                             </Dialog>

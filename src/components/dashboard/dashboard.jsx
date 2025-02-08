@@ -22,9 +22,9 @@ export default function Dashboard() {
   ];
 
   const tenants = [
-    { name: "Alice Cooper", unit: "4B", status: "current", lastPayment: "2024-02-01" },
-    { name: "Bob Marshall", unit: "7A", status: "late", lastPayment: "2024-01-15" },
-    { name: "Carol Smith", unit: "2C", status: "current", lastPayment: "2024-02-03" },
+    { name: "Pulkit Chaudhary", unit: "4B", status: "current", lastPayment: "2024-02-01" },
+    { name: "Puja Shrestha", unit: "7A", status: "late", lastPayment: "2024-01-15" },
+    { name: "Abhinav Pandey", unit: "2C", status: "current", lastPayment: "2024-02-03" },
   ];
 
   return (
