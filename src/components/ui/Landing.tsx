@@ -127,7 +127,7 @@ function Scene() {
 export default function Component() {
   return (
     <div>
-      <div className={`relative w-full h-screen bg-black text-white overflow-hidden ${manrope.className}`}>
+      <div className={`relative w-full h-screen  text-white overflow-hidden ${manrope.className}`}>
       <header className="absolute top-0 left-0 right-0 z-10 p-4">
         <nav className="flex justify-center items-center max-w-6xl mx-auto">
           <div className="flex items-center">
@@ -135,7 +135,7 @@ export default function Component() {
               <Canvas camera={{ position: [0, 0, 5] }}>
                 <ambientLight intensity={0.5} />
                 <pointLight position={[10, 10, 10]} />
-                <SpinningLogo />
+                {/* <SpinningLogo /> */}
               </Canvas>
             </div>
            
@@ -159,12 +159,12 @@ export default function Component() {
           <Link href="/register" className="bg-white text-black font-bold py-3 px-6 rounded-md hover:bg-gray-200 transition duration-300">
             Get Started
           </Link>
-          <a href="#features" className="border text-white border-white py-3 px-6 rounded-md hover:bg-white/10 transition duration-300">
-            Learn More
+          <a href="/login" className="border text-white border-white py-3 px-6 rounded-md hover:bg-white/10 transition duration-300">
+            Already a user?
           </a>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 my-40 max-w-6xl mx-auto ">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 my-40 max-w-6xl mx-auto text-white">
           <div className="flex flex-col items-center bg-white/10 p-8 rounded-lg shadow-lg">
             <div className="bg-white/10 p-3 rounded-lg mb-3">
               <Shield className="w-6 h-6" />

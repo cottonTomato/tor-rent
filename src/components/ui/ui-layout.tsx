@@ -14,7 +14,7 @@ export function UiLayout({ children, links }: { children: ReactNode; links: { la
   const pathname = usePathname()
 
   return (
-    <div className="h-full w-full flex flex-col bg-black">
+    <div className="h-full w-full flex flex-col bg-gradient-to-br from-gray-800 to-black">
       
       <ClusterChecker>
         <AccountChecker />
