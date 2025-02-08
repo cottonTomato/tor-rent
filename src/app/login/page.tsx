@@ -11,7 +11,7 @@ export default function Page() {
 
   useEffect(() => {
     if (connected) {
-      router.push("/dashboard"); // Redirect when wallet is connected
+      router.push("/register"); // Redirect when wallet is connected
     }
   }, [connected, router]);
 
