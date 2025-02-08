@@ -8,6 +8,40 @@
   },
   "instructions": [
     {
+      "name": "attempt_auto_deduction",
+      "discriminator": [
+        93,
+        1,
+        188,
+        5,
+        82,
+        193,
+        161,
+        243
+      ],
+      "accounts": [
+        {
+          "name": "rental_agreement",
+          "writable": true
+        },
+        {
+          "name": "tenant",
+          "writable": true,
+          "relations": [
+            "rental_agreement"
+          ]
+        },
+        {
+          "name": "landlord",
+          "writable": true,
+          "relations": [
+            "rental_agreement"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "create_agreement",
       "discriminator": [
         220,
@@ -288,6 +322,19 @@
       ]
     },
     {
+      "name": "AgreementDefaulted",
+      "discriminator": [
+        72,
+        169,
+        50,
+        102,
+        162,
+        201,
+        73,
+        131
+      ]
+    },
+    {
       "name": "AgreementTerminated",
       "discriminator": [
         100,
@@ -350,6 +397,19 @@
         38,
         73,
         241
+      ]
+    },
+    {
+      "name": "RentPaymentFailed",
+      "discriminator": [
+        115,
+        195,
+        101,
+        11,
+        34,
+        43,
+        244,
+        40
       ]
     }
   ],
@@ -424,6 +484,22 @@
           },
           {
             "name": "duration_months",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AgreementDefaulted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agreement",
+            "type": "pubkey"
+          },
+          {
+            "name": "missed_payments",
             "type": "u8"
           }
         ]
@@ -539,8 +615,36 @@
             "type": "u64"
           },
           {
+            "name": "auto_deducted",
+            "type": "bool"
+          },
+          {
             "name": "payment_date",
             "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RentPaymentFailed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agreement",
+            "type": "pubkey"
+          },
+          {
+            "name": "required_amount",
+            "type": "u64"
+          },
+          {
+            "name": "available_balance",
+            "type": "u64"
+          },
+          {
+            "name": "missed_payments",
+            "type": "u8"
           }
         ]
       }

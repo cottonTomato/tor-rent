@@ -14,6 +14,40 @@ export type Torrent = {
   },
   "instructions": [
     {
+      "name": "attemptAutoDeduction",
+      "discriminator": [
+        93,
+        1,
+        188,
+        5,
+        82,
+        193,
+        161,
+        243
+      ],
+      "accounts": [
+        {
+          "name": "rentalAgreement",
+          "writable": true
+        },
+        {
+          "name": "tenant",
+          "writable": true,
+          "relations": [
+            "rentalAgreement"
+          ]
+        },
+        {
+          "name": "landlord",
+          "writable": true,
+          "relations": [
+            "rentalAgreement"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "createAgreement",
       "discriminator": [
         220,
@@ -294,6 +328,19 @@ export type Torrent = {
       ]
     },
     {
+      "name": "agreementDefaulted",
+      "discriminator": [
+        72,
+        169,
+        50,
+        102,
+        162,
+        201,
+        73,
+        131
+      ]
+    },
+    {
       "name": "agreementTerminated",
       "discriminator": [
         100,
@@ -356,6 +403,19 @@ export type Torrent = {
         38,
         73,
         241
+      ]
+    },
+    {
+      "name": "rentPaymentFailed",
+      "discriminator": [
+        115,
+        195,
+        101,
+        11,
+        34,
+        43,
+        244,
+        40
       ]
     }
   ],
@@ -430,6 +490,22 @@ export type Torrent = {
           },
           {
             "name": "durationMonths",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "agreementDefaulted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agreement",
+            "type": "pubkey"
+          },
+          {
+            "name": "missedPayments",
             "type": "u8"
           }
         ]
@@ -545,8 +621,36 @@ export type Torrent = {
             "type": "u64"
           },
           {
+            "name": "autoDeducted",
+            "type": "bool"
+          },
+          {
             "name": "paymentDate",
             "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rentPaymentFailed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agreement",
+            "type": "pubkey"
+          },
+          {
+            "name": "requiredAmount",
+            "type": "u64"
+          },
+          {
+            "name": "availableBalance",
+            "type": "u64"
+          },
+          {
+            "name": "missedPayments",
+            "type": "u8"
           }
         ]
       }

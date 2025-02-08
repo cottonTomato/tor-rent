@@ -168,7 +168,69 @@ pub mod torrent {
             agreement: rental_agreement.key(),
             amount: rental_agreement.rent_amount,
             payment_date: clock.unix_timestamp,
+            auto_deducted: false,
         });
+
+        Ok(())
+    }
+
+    pub fn attempt_auto_deduction(ctx: Context<AutoDeductRent>) -> Result<()> {
+        let rental_agreement = &mut ctx.accounts.rental_agreement;
+        let clock = Clock::get()?;
+
+        require!(rental_agreement.is_active, TorrentError::AgreementInactive);
+
+        // Check if payment is due
+        require!(
+            clock.unix_timestamp >= rental_agreement.next_payment_date,
+            TorrentError::PaymentNotDue
+        );
+
+        // Check if contract hasn't expired
+        let contract_end_date = rental_agreement.start_date
+            + (rental_agreement.duration_months as i64 * SECONDS_PER_MONTH);
+        require!(
+            clock.unix_timestamp < contract_end_date,
+            TorrentError::ContractExpired
+        );
+
+        // Get tenant's balance
+        let tenant_balance = ctx.accounts.tenant.lamports();
+
+        // Check if tenant has sufficient funds
+        if tenant_balance >= rental_agreement.rent_amount {
+            // Process the rent payment
+            **ctx.accounts.tenant.try_borrow_mut_lamports()? -= rental_agreement.rent_amount;
+            **ctx.accounts.landlord.try_borrow_mut_lamports()? += rental_agreement.rent_amount;
+
+            rental_agreement.last_payment_date = clock.unix_timestamp;
+            rental_agreement.next_payment_date = clock.unix_timestamp + SECONDS_PER_MONTH;
+
+            emit!(RentPaid {
+                agreement: rental_agreement.key(),
+                amount: rental_agreement.rent_amount,
+                payment_date: clock.unix_timestamp,
+                auto_deducted: true,
+            });
+        } else {
+            // If insufficient funds, increment missed payments
+            rental_agreement.missed_payments = rental_agreement.missed_payments.saturating_add(1);
+
+            emit!(RentPaymentFailed {
+                agreement: rental_agreement.key(),
+                required_amount: rental_agreement.rent_amount,
+                available_balance: tenant_balance,
+                missed_payments: rental_agreement.missed_payments,
+            });
+
+            // Check if missed payments exceed threshold
+            if rental_agreement.missed_payments >= 3 {
+                emit!(AgreementDefaulted {
+                    agreement: rental_agreement.key(),
+                    missed_payments: rental_agreement.missed_payments,
+                });
+            }
+        }
 
         Ok(())
     }
@@ -305,6 +367,16 @@ pub struct ResolveMaintenanceRequest<'info> {
     pub landlord: Signer<'info>,
 }
 
+#[derive(Accounts)]
+pub struct AutoDeductRent<'info> {
+    #[account(mut, has_one = tenant, has_one = landlord)]
+    pub rental_agreement: Account<'info, RentalAgreement>,
+    #[account(mut)]
+    pub tenant: SystemAccount<'info>,
+    #[account(mut)]
+    pub landlord: SystemAccount<'info>,
+}
+
 #[event]
 pub struct AgreementCreated {
     pub landlord: Pubkey,
@@ -333,7 +405,22 @@ pub struct AgreementTerminated {
 pub struct RentPaid {
     pub agreement: Pubkey,
     pub amount: u64,
+    pub auto_deducted: bool,
     pub payment_date: i64,
+}
+
+#[event]
+pub struct RentPaymentFailed {
+    pub agreement: Pubkey,
+    pub required_amount: u64,
+    pub available_balance: u64,
+    pub missed_payments: u8,
+}
+
+#[event]
+pub struct AgreementDefaulted {
+    pub agreement: Pubkey,
+    pub missed_payments: u8,
 }
 
 #[event]
