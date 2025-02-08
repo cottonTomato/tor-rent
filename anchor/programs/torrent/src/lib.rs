@@ -2,69 +2,66 @@
 
 use anchor_lang::prelude::*;
 
-declare_id!("coUnmi3oBUtwtd9fjeAvSsJssXh5A5xyPbhpewyzRVF");
+declare_id!("Au1tsG1thDEY9gaGdh7CPDUbEE8J3G5ykBGQjQdD6vzt");
 
 #[program]
 pub mod torrent {
     use super::*;
 
-  pub fn close(_ctx: Context<CloseTorrent>) -> Result<()> {
-    Ok(())
-  }
+    pub fn create_agreement(ctx: Context<CreateAgreement>) -> Result<()> {
+        Ok(())
+    }
 
-  pub fn decrement(ctx: Context<Update>) -> Result<()> {
-    ctx.accounts.torrent.count = ctx.accounts.torrent.count.checked_sub(1).unwrap();
-    Ok(())
-  }
+    pub fn update_agreement(ctx: Context<UpdateAgreement>) -> Result<()> {
+        Ok(())
+    }
 
-  pub fn increment(ctx: Context<Update>) -> Result<()> {
-    ctx.accounts.torrent.count = ctx.accounts.torrent.count.checked_add(1).unwrap();
-    Ok(())
-  }
-
-  pub fn initialize(_ctx: Context<InitializeTorrent>) -> Result<()> {
-    Ok(())
-  }
-
-  pub fn set(ctx: Context<Update>, value: u8) -> Result<()> {
-    ctx.accounts.torrent.count = value.clone();
-    Ok(())
-  }
-}
-
-#[derive(Accounts)]
-pub struct InitializeTorrent<'info> {
-  #[account(mut)]
-  pub payer: Signer<'info>,
-
-  #[account(
-  init,
-  space = 8 + Torrent::INIT_SPACE,
-  payer = payer
-  )]
-  pub torrent: Account<'info, Torrent>,
-  pub system_program: Program<'info, System>,
-}
-#[derive(Accounts)]
-pub struct CloseTorrent<'info> {
-  #[account(mut)]
-  pub payer: Signer<'info>,
-
-  #[account(
-  mut,
-  close = payer, // close account and return lamports to payer
-  )]
-  pub torrent: Account<'info, Torrent>,
-}
-
-#[derive(Accounts)]
-pub struct Update<'info> {
-  #[account(mut)]
-  pub torrent: Account<'info, Torrent>,
+    pub fn terminate_agreement(ctx: Context<TerminateAgreement>) -> Result<()> {
+        Ok(())
+    }
 }
 
 #[account]
 #[derive(InitSpace)]
-pub struct Torrent {
-  count: u8,
+pub struct RentalAgreement {
+    pub landlord: Pubkey,
+    pub tenant: Pubkey,
+    pub rent_amount: u64,
+    pub deposit_amount: u64,
+    pub duration_months: u8,
+    #[max_len(50)]
+    pub ipfs_cid: String,
+    pub is_active: bool,
+}
+
+#[derive(Accounts)]
+pub struct CreateAgreement<'info> {
+    #[account(init, payer = landlord, space = 8 + RentalAgreement::INIT_SPACE)]
+    pub rental_agreement: Account<'info, RentalAgreement>,
+    #[account(mut)]
+    pub landlord: Signer<'info>,
+    #[account(mut)]
+    pub tenant: Signer<'info>,
+    pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+pub struct UpdateAgreement<'info> {
+    #[account(mut, has_one = landlord)]
+    pub rental_agreement: Account<'info, RentalAgreement>,
+    #[account(mut)]
+    pub landlord: Signer<'info>,
+    #[account(mut)]
+    pub tenant: Signer<'info>,
+}
+
+#[derive(Accounts)]
+pub struct TerminateAgreement<'info> {
+    #[account(mut, has_one = landlord)]
+    pub rental_agreement: Account<'info, RentalAgreement>,
+    #[account(mut)]
+    pub landlord: Signer<'info>,
+    #[account(mut)]
+    pub tenant: Signer<'info>,
+    pub system_program: Program<'info, System>,
 }
