@@ -1,88 +1,109 @@
-"use client"
-import { useState } from "react";
-
-const complaintsData = [
-  {
-    id: 1,
-    title: "Water Leakage in Bathroom",
-    status: "Under Review",
-    mediator: "Amit Sharma",
-    landlordReply: "Plumber has been scheduled for tomorrow.",
-    chat: [
-      { sender: "Tenant", message: "There is water leakage from the bathroom ceiling." },
-      { sender: "Landlord", message: "I'll get it checked tomorrow." },
-    ],
-    resolution: "Pending",
-  },
-  {
-    id: 2,
-    title: "No Electricity in Kitchen",
-    status: "Resolved",
-    mediator: "Priya Verma",
-    landlordReply: "Electrician fixed the wiring issue on Feb 10th.",
-    chat: [
-      { sender: "Tenant", message: "There is no electricity in the kitchen since last night." },
-      { sender: "Landlord", message: "The electrician has fixed it today. Let me know if there's any issue." },
-    ],
-    resolution: "Refund Processed",
-  },
-];
-
-
+"use client";
+import { useEffect, useState } from "react";
+import { db } from "./../../firebaseConfig";
+import { collection, getDocs } from "firebase/firestore";
+import { motion } from "framer-motion";
 
 export default function ComplaintsPage() {
-    // Property details state (Indian Context)
-const [propertyDetails, setPropertyDetails] = useState({
-    address: "Flat 302, Gokul Residency, Andheri East, Mumbai",
-    rent: 22000, // INR per month
-    nextPayment: "2024-03-01",
-    leaseEnd: "2024-12-31",
-    deposit: 75000, // INR, typical 3-6 months' rent
-    maintenanceRequests: [],
-    documents: ["Rent Agreement", "Aadhaar Card", "Electricity Bill"]
-  });
+  const [complaints, setComplaints] = useState([]);
   const [selectedComplaint, setSelectedComplaint] = useState(null);
 
+  useEffect(() => {
+    const fetchComplaints = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "conflict_resolution"));
+        const complaintsList = querySnapshot.docs.map((doc) => {
+          const data = doc.data();
+          console.log("Rcvd", data);
+          return {
+            id: doc.id,
+            sender: data?.sender || "Tenant's message",
+            title: `Issue ID: ${data.issue_id || "Issue - 2/8/2025"}`,
+            status: data.resolved_at ? "Resolved" : "Under Review",
+            mediator: data.mediator || "Admin",
+            landlordReply: data.resolution_notes || "Awaiting landlord response.",
+            resolution: data.resolved_at
+              ? `Resolved on ${new Date(data.resolved_at.seconds * 1000).toLocaleString()}`
+              : "Pending",
+            imageUrl: data.image && data.image.trim() !== ""
+              ? data.image
+              : "",
+
+          };
+        });
+        
+        setComplaints(complaintsList);
+      } catch (error) {
+        console.error("Error fetching complaints:", error);
+      }
+    };
+    fetchComplaints();
+  }, []);
+
+  const handleSelectedComplaint = (complaint) => { 
+    console.log("Selected Complaint:", complaint);
+    setSelectedComplaint(complaint); 
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black to-gray-900 text-white p-6">
-      <h1 className="text-3xl font-bold mb-6">Your Complaints</h1>
-      <div className="grid grid-cols-3 gap-6">
+    <div className="min-h-screen bg-gradient-to-b from-black to-gray-900 text-white p-6 flex flex-col items-center">
+      <h1 className="text-4xl font-bold mb-6 text-center">Your Complaints</h1>
+      <div className="flex w-full max-w-6xl gap-6">
         {/* Complaints List */}
-        <div className="col-span-1 border-r border-gray-700 pr-4">
-          {complaintsData.map((complaint) => (
-            <div
+        <div className="w-1/3 bg-gray-800 p-4 rounded-lg shadow-lg overflow-auto max-h-[80vh]">
+          {complaints.map((complaint) => (
+            <motion.div
               key={complaint.id}
-              className={`p-4 mb-4 rounded-lg cursor-pointer ${
-                selectedComplaint?.id === complaint.id ? "bg-gray-800" : "bg-gray-700"
-              }`}
-              onClick={() => setSelectedComplaint(complaint)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={`p-4 mb-4 rounded-lg cursor-pointer transition-all duration-300 ${selectedComplaint?.id === complaint.id ? "bg-gray-900" : "bg-gray-700"
+                }`}
+              onClick={() => handleSelectedComplaint(complaint)}
             >
-              <h2 className="text-xl font-semibold">{complaint.title}</h2>
-              <p className="text-sm text-gray-400">Status: {complaint.status}</p>
-            </div>
+              <h2 className="text-xl font-semibold">{complaint?.title}</h2>
+              <p
+                className={`text-sm font-medium mt-1 py-1 px-2 inline-block rounded-md ${complaint?.status === "Resolved" ? "bg-green-500" : "bg-yellow-500"
+                  }`}
+              >
+                {complaint?.status}
+              </p>
+            </motion.div>
           ))}
         </div>
 
         {/* Complaint Details */}
-        <div className="col-span-2">
+        <div className="w-2/3">
           {selectedComplaint ? (
-            <div className="bg-gray-800 p-6 rounded-lg">
-              <h2 className="text-2xl font-bold">{selectedComplaint.title}</h2>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className="bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-700"
+            >
+              <h2 className="text-2xl font-bold mb-2">{selectedComplaint?.title}</h2>
               <p className="text-gray-400">Status: {selectedComplaint.status}</p>
               <p className="text-gray-400">Mediator: {selectedComplaint.mediator}</p>
-              <p className="mt-4">Landlord's Reply: "{selectedComplaint.landlordReply}"</p>
-              <h3 className="mt-6 text-lg font-semibold">Chat</h3>
-              <div className="bg-gray-700 p-4 rounded-lg max-h-40 overflow-auto">
-                {selectedComplaint.chat.map((msg, index) => (
-                  <p key={index} className={msg.sender === "Tenant" ? "text-blue-400" : "text-green-400"}>
-                    <strong>{msg.sender}: </strong>{msg.message}
-                  </p>
-                ))}
+              <p className="mt-4 text-yellow-400 font-medium">Landlord's Reply: "{selectedComplaint.landlordReply}"</p>
+
+              {/* Render Image if Available */}
+              <div className="mt-4">
+                <h3 className="text-lg font-semibold">Uploaded Image</h3>
+                <img
+                  src={selectedComplaint?.imageUrl}
+                  alt="Complaint Image"
+                  className="mt-2 w-full h-auto rounded-lg shadow-lg border border-gray-600"
+                />
               </div>
-              <p className="mt-4 text-yellow-400">Resolution: {selectedComplaint.resolution}</p>
-            </div>
+
+              <h3 className="mt-6 text-lg font-semibold">Chat</h3>
+              <div className="bg-gray-700 p-4 rounded-lg max-h-40 overflow-auto border border-gray-600">
+              <p className="font-semibold">Sender's message: {selectedComplaint.sender}</p>
+              </div>
+
+              <p className="mt-4 text-green-400 font-semibold">Resolution: {selectedComplaint.resolution}</p>
+            </motion.div>
           ) : (
-            <p className="text-gray-400">Select a complaint to view details.</p>
+            <p className="text-gray-400 text-lg text-center">Select a complaint to view details.</p>
           )}
         </div>
       </div>

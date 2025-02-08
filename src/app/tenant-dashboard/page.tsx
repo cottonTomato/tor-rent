@@ -1,6 +1,9 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import emailjs from "@emailjs/browser";
+import { db, storage } from './../../firebaseConfig'; // Firebase storage added
+import { collection, getDocs, addDoc } from 'firebase/firestore';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import {
   Home, Calendar, Bell, AlertCircle,
   CreditCard, MessageSquare, FileText,
@@ -25,49 +28,124 @@ import * as Toast from "@radix-ui/react-toast";
 
 const TenantDashboard = () => {
 
-    const handleImageUpload = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onloadend = () => {
-            setImageBase64(reader.result);
-          };
-          setImage(file);
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+    }
+  };
+
+
+  const handleEmail = async (message) => {
+    console.log("Message:", message);
+    setLoading(true);
+    setLoading(true);
+
+    const serviceID = "service_khesrrp";
+    const templateID = "template_63tblyc";
+    const publicKey = "oJmBKOHVFS2r-wETd";
+
+
+    emailjs
+      .send(serviceID, templateID, {
+        from_name: "Tenant ABC",
+        to_name: 'Landlord XYZ',
+        from_email: "tenant@gmail.com",
+        to_email: 'piyanshugehani@gmail.com',
+        message: message,
+      },
+        publicKey)
+      .then((response) => {
+        alert("Message sent successfully:", response);
+        setSuccess(true);
+        setOpen(false); // Close the dialog
+        setMessage("");
+      })
+      .catch((error) => {
+        alert("Error sending message:", error);
+        setSuccess(false);
+      })
+      .finally(() => setLoading(false));
+  }
+
+  const handleSubmit = async () => {
+    if (!message) return alert("Please enter a complaint message.");
+    setLoading(true);
+
+    try {
+      let imageUrl = null;
+
+      // Ensure `image` is valid
+      if (image) {
+        console.log("Image selected:", image);
+
+        // Validate file type and size (5MB limit)
+        if (!image.type.startsWith("image/")) {
+          return alert("Please select a valid image file.");
         }
+        if (image.size > 5 * 1024 * 1024) {
+          return alert("Image size must be under 5MB.");
+        }
+
+        // Get Firebase storage reference
+        const storageRef = ref(storage, `complaints/${Date.now()}_${image.name}`);
+        console.log("Uploading to:", storageRef.fullPath);
+
+        const uploadTask = uploadBytesResumable(storageRef, image);
+
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            console.log(`Uploading: ${snapshot.bytesTransferred} / ${snapshot.totalBytes}`);
+          },
+          (error) => {
+            console.error("Upload failed:", error);
+          },
+          async () => {
+            const url = await getDownloadURL(uploadTask.snapshot.ref);
+            console.log("Uploaded Image URL:", url);
+          }
+        );
+      }
+
+      // New complaint object
+      const newComplaint = {
+        issue_id: `Issue - ${new Date().toLocaleDateString()}`,
+        status: "Under Review",
+        mediator: "Admin",
+        landlordReply: "Awaiting landlord response.",
+        sender: message,
+        image: imageUrl,
+        resolution: "Pending",
       };
 
-    const handleEmail = async (e) => {
-        e.preventDefault();
-        console.log("Message:", message);
-        setLoading(true);
-    
-        const serviceID = "service_khesrrp";
-        const templateID = "template_63tblyc";
-        const publicKey = "oJmBKOHVFS2r-wETd";
-    
-    
-        emailjs
-          .send(serviceID, templateID, {
-            from_name: "Tenant ABC",
-            to_name: 'Landlord XYZ',
-            from_email: "tenant@gmail.com",
-            to_email: 'piyanshugehani@gmail.com',
-            message: message,
-          }, 
-          publicKey)
-          .then((response) => {
-            alert("Message sent successfully:", response);
-            setSuccess(true);
-            setOpen(false); // Close the dialog
-            setMessage("");
-          })
-          .catch((error) => {
-            alert("Error sending message:", error);
-            setSuccess(false);
-          })
-          .finally(() => setLoading(false));
+      console.log("New Complaint:", newComplaint);
+
+      // Add to Firestore
+      const docRef = await addDoc(collection(db, "conflict_resolution"), newComplaint);
+      console.log("Complaint submitted with ID:", docRef.id);
+
+      // Update UI
+      setComplaints([newComplaint, ...complaints]);
+      setOpen(false);
+      setMessage("");
+      setImage(null);
+
+      // Send email notification (if implemented)
+      await handleEmail(message);
+    } catch (error) {
+      console.error("Error submitting complaint:", error);
+    } finally {
+      setLoading(false);
     }
+  };
+
+
+
+
+
+
+
   // State management
   const [payments, setPayments] = useState([]);
   const [notifications, setNotifications] = useState([]);
@@ -79,6 +157,7 @@ const TenantDashboard = () => {
   const [image, setImage] = useState(null);
   const [imageBase64, setImageBase64] = useState("");
   const [open, setOpen] = useState(false); // Controls dialog visibility
+  const [complaints, setComplaints] = useState([]);
 
   const actions = [
     { label: "Browse Listings", icon: Search, color: "blue", url: "/listings" },
@@ -88,15 +167,15 @@ const TenantDashboard = () => {
   ];
 
   // Property details state (Indian Context)
-const [propertyDetails, setPropertyDetails] = useState({
-  address: "Flat 302, Gokul Residency, Andheri East, Mumbai",
-  rent: 22000, // INR per month
-  nextPayment: "2024-03-01",
-  leaseEnd: "2024-12-31",
-  deposit: 75000, // INR, typical 3-6 months' rent
-  maintenanceRequests: [],
-  documents: ["Rent Agreement", "Aadhaar Card", "Electricity Bill"]
-});
+  const [propertyDetails, setPropertyDetails] = useState({
+    address: "Flat 302, Gokul Residency, Andheri East, Mumbai",
+    rent: 22000, // INR per month
+    nextPayment: "2024-03-01",
+    leaseEnd: "2024-12-31",
+    deposit: 75000, // INR, typical 3-6 months' rent
+    maintenanceRequests: [],
+    documents: ["Rent Agreement", "Aadhaar Card", "Electricity Bill"]
+  });
 
 
   // Payment form state
@@ -118,7 +197,7 @@ const [propertyDetails, setPropertyDetails] = useState({
       { id: 2, type: "Utilities", amount: 150, due: "2024-02-28", status: "pending" },
       { id: 3, type: "Security Deposit", amount: 5000, due: "2024-01-01", status: "paid" }
     ];
-    
+
     const mockNotifications = [
       { id: 1, title: "Maintenance Request", desc: "Request #123 has been approved", type: "success" },
       { id: 2, title: "Rent Due Soon", desc: "Your next payment is due in 5 days", type: "warning" },
@@ -206,7 +285,7 @@ const [propertyDetails, setPropertyDetails] = useState({
               id="amount"
               type="number"
               value={paymentForm.amount}
-              onChange={(e) => setPaymentForm({...paymentForm, amount: e.target.value})}
+              onChange={(e) => setPaymentForm({ ...paymentForm, amount: e.target.value })}
               placeholder="Enter amount"
               className="bg-gray-800 border-gray-700"
               required
@@ -218,7 +297,7 @@ const [propertyDetails, setPropertyDetails] = useState({
               id="paymentDate"
               type="date"
               value={paymentForm.paymentDate}
-              onChange={(e) => setPaymentForm({...paymentForm, paymentDate: e.target.value})}
+              onChange={(e) => setPaymentForm({ ...paymentForm, paymentDate: e.target.value })}
               className="bg-gray-800 border-gray-700"
               required
             />
@@ -279,37 +358,47 @@ const [propertyDetails, setPropertyDetails] = useState({
                       </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4">
-                         {/* Image Upload Input */}
-          <input
-            type="file"
-            accept="image/*"
-            className="w-full text-white"
-            onChange={handleImageUpload}
-            required
-          />
+                      {/* Image Upload Input */}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="w-full text-white"
+                        onChange={handleImageUpload}
+                      />
 
-          {/* Preview Uploaded Image */}
-          {image && (
-            <div className="mt-2">
-              <p className="text-gray-300 text-sm">Preview:</p>
-              <img
-                src={URL.createObjectURL(image)}
-                alt="Complaint Attachment"
-                className="mt-2 max-h-40 rounded-lg"
-              />
-            </div>
-          )}
+                      {/* Preview Uploaded Image */}
+                      {image && (
+                        <div className="mt-2">
+                          <p className="text-gray-300 text-sm">Preview:</p>
+                          <img
+                            src={URL.createObjectURL(image)}
+                            alt="Complaint Attachment"
+                            className="mt-2 max-h-40 rounded-lg"
+                          />
+                        </div>
+                      )}
                       <textarea
                         className="w-full h-32 bg-gray-800 border-gray-700 rounded-md p-2"
                         placeholder="Type your message here..."
                         onChange={(e) => setMessage(e.target.value)}
                       />
-                      <Button className="w-full text-black" onClick={handleEmail}>Send Message</Button>
+                      <Button
+                        className='bg-green-600 hover:bg-green-700 mt-4 w-full'
+                        onClick={() => {
+                          handleSubmit();
+                          // handleEmail(message);
+                        }}
+                        disabled={loading}
+                      >
+                        {loading ? 'Submitting...' : 'Send Message'}
+                      </Button>
+
+
                     </div>
                   </DialogContent>
                 </Dialog>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="border-gray-600"
                   onClick={() => downloadDocument('lease')}
                 >
@@ -323,34 +412,34 @@ const [propertyDetails, setPropertyDetails] = useState({
         {/* Quick Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {[
-            { 
-              label: "Next Rent Due", 
-              value: `₹${propertyDetails.rent}`, 
-              icon: Calendar, 
+            {
+              label: "Next Rent Due",
+              value: `₹${propertyDetails.rent}`,
+              icon: Calendar,
               date: propertyDetails.nextPayment,
               action: () => setIsPaymentModalOpen(true)
             },
-            { 
-              label: "Security Deposit", 
-              value: `₹${propertyDetails.deposit}`, 
-              icon: ShieldCheck, 
-              status: "Held" 
+            {
+              label: "Security Deposit",
+              value: `₹${propertyDetails.deposit}`,
+              icon: ShieldCheck,
+              status: "Held"
             },
-            { 
-              label: "Days Until Due", 
-              value: "5 Days", 
-              icon: Clock, 
-              alert: true 
+            {
+              label: "Days Until Due",
+              value: "5 Days",
+              icon: Clock,
+              alert: true
             },
-            { 
-              label: "Payment Status", 
-              value: "On Track", 
-              icon: CreditCard, 
-              status: "good" 
+            {
+              label: "Payment Status",
+              value: "On Track",
+              icon: CreditCard,
+              status: "good"
             }
           ].map((stat, idx) => (
-            <Card 
-              key={idx} 
+            <Card
+              key={idx}
               className="bg-gradient-to-br from-gray-800 to-gray-900 border-gray-700 cursor-pointer hover:border-gray-600 transition-all"
               onClick={stat.action}
             >
@@ -363,9 +452,8 @@ const [propertyDetails, setPropertyDetails] = useState({
                       {stat.date || stat.status}
                     </p>
                   </div>
-                  <div className={`p-3 rounded-lg ${
-                    stat.alert ? 'bg-red-500/10 text-red-400' : 'bg-gray-800/50 text-gray-400'
-                  }`}>
+                  <div className={`p-3 rounded-lg ${stat.alert ? 'bg-red-500/10 text-red-400' : 'bg-gray-800/50 text-gray-400'
+                    }`}>
                     <stat.icon className="w-6 h-6" />
                   </div>
                 </div>
@@ -401,11 +489,10 @@ const [propertyDetails, setPropertyDetails] = useState({
                     </div>
                     <div className="text-right">
                       <p className="font-medium text-white">₹{payment.amount}</p>
-                      <span className={`px-3 py-1 rounded-full text-xs ${
-                        payment.status === 'upcoming' ? 'bg-yellow-500/20 text-yellow-400' :
+                      <span className={`px-3 py-1 rounded-full text-xs ${payment.status === 'upcoming' ? 'bg-yellow-500/20 text-yellow-400' :
                         payment.status === 'paid' ? 'bg-green-500/20 text-green-400' :
-                        'bg-blue-500/20 text-blue-400'
-                      }`}>
+                          'bg-blue-500/20 text-blue-400'
+                        }`}>
                         {payment.status}
                       </span>
                     </div>
@@ -430,10 +517,9 @@ const [propertyDetails, setPropertyDetails] = useState({
                 {notifications.map((notif, idx) => (
                   <div key={idx} className="p-4 bg-black/20 rounded-lg space-y-2">
                     <div className="flex items-center space-x-2">
-                      <span className={`w-2 h-2 rounded-full ${
-                        notif.type === 'success' ? 'bg-green-400' :
+                      <span className={`w-2 h-2 rounded-full ${notif.type === 'success' ? 'bg-green-400' :
                         notif.type === 'warning' ? 'bg-yellow-400' : 'bg-blue-400'
-                      }`} />
+                        }`} />
                       <p className="font-medium text-white">{notif.title}</p>
                     </div>
                     <p className="text-sm text-gray-400">{notif.desc}</p>
@@ -446,22 +532,22 @@ const [propertyDetails, setPropertyDetails] = useState({
 
 
 
-{/* Quick Actions */}
-<div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 text-white">
-  {actions.map((action, idx) => (
-    <Button
-      key={idx}
-      variant="ghost"
-      onClick={() => (window.location.href = action.url)}
-      className={`bg-gradient-to-br from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 
+        {/* Quick Actions */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 text-white">
+          {actions.map((action, idx) => (
+            <Button
+              key={idx}
+              variant="ghost"
+              onClick={() => (window.location.href = action.url)}
+              className={`bg-gradient-to-br from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 
         border border-gray-700 p-4 h-auto flex items-center justify-center space-x-2
         hover:border-${action.color}-500/50`}
-    >
-      <action.icon className={`w-5 h-5 text-${action.color}-400`} />
-      <span>{action.label}</span>
-    </Button>
-  ))}
-</div>
+            >
+              <action.icon className={`w-5 h-5 text-${action.color}-400`} />
+              <span>{action.label}</span>
+            </Button>
+          ))}
+        </div>
 
       </main>
     </div>

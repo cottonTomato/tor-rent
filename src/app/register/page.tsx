@@ -27,21 +27,35 @@ const RegistrationPage = () => {
     }
   };
 
-  const handleFileUpload = (e) => {
+  const handleFileUpload = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      // Simulate OCR processing
-      setIsVerifying(true);
-      setTimeout(() => {
-        setIsVerifying(false);
-        setFormData(prev => ({
+    if (!file) return;
+  
+    const formData = new FormData();
+    formData.append("aadharImage", file);
+  
+    try {
+      const response = await fetch("http://127.0.0.1:5000/upload-aadhar", {
+        method: "POST",
+        body: formData,
+      });
+  
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Upload successful:", data);
+        setFormData((prev) => ({
           ...prev,
-          phone: '9876543210' // Simulated phone number from OCR
+          phone: data.phone || "9876543210", // Use extracted phone if available
         }));
         setStep(3);
-      }, 2000);
+      } else {
+        console.error("Upload failed:", data.error);
+      }
+    } catch (error) {
+      console.error("Error uploading file:", error);
     }
   };
+    
 
   const handleOtpChange = (value, index) => {
     const newOtp = [...otp];

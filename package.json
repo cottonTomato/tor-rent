@@ -34,6 +34,7 @@
     "@tanstack/react-query-next-experimental": "^5.51.11",
     "class-variance-authority": "^0.7.1",
     "daisyui": "^4.12.10",
+    "firebase": "^11.3.0",
     "framer-motion": "^12.4.1",
     "jotai": "^2.9.1",
     "lucide-react": "^0.475.0",

@@ -8,6 +8,78 @@
   },
   "instructions": [
     {
+      "name": "attempt_auto_deduction",
+      "discriminator": [
+        93,
+        1,
+        188,
+        5,
+        82,
+        193,
+        161,
+        243
+      ],
+      "accounts": [
+        {
+          "name": "rental_agreement",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  110,
+                  116,
+                  97,
+                  108,
+                  95,
+                  97,
+                  103,
+                  114,
+                  101,
+                  101,
+                  109,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "landlord"
+              },
+              {
+                "kind": "account",
+                "path": "tenant"
+              },
+              {
+                "kind": "account",
+                "path": "rental_agreement.ipfs_cid",
+                "account": "RentalAgreement"
+              }
+            ]
+          }
+        },
+        {
+          "name": "tenant",
+          "writable": true,
+          "relations": [
+            "rental_agreement"
+          ]
+        },
+        {
+          "name": "landlord",
+          "writable": true,
+          "relations": [
+            "rental_agreement"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "create_agreement",
       "discriminator": [
         220,
@@ -23,7 +95,43 @@
         {
           "name": "rental_agreement",
           "writable": true,
-          "signer": true
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  110,
+                  116,
+                  97,
+                  108,
+                  95,
+                  97,
+                  103,
+                  114,
+                  101,
+                  101,
+                  109,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "landlord"
+              },
+              {
+                "kind": "account",
+                "path": "tenant"
+              },
+              {
+                "kind": "arg",
+                "path": "ipfs_cid"
+              }
+            ]
+          }
         },
         {
           "name": "landlord",
@@ -60,6 +168,221 @@
       ]
     },
     {
+      "name": "pay_rent",
+      "discriminator": [
+        69,
+        155,
+        112,
+        183,
+        178,
+        234,
+        94,
+        100
+      ],
+      "accounts": [
+        {
+          "name": "rental_agreement",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  110,
+                  116,
+                  97,
+                  108,
+                  95,
+                  97,
+                  103,
+                  114,
+                  101,
+                  101,
+                  109,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "landlord"
+              },
+              {
+                "kind": "account",
+                "path": "tenant"
+              },
+              {
+                "kind": "account",
+                "path": "rental_agreement.ipfs_cid",
+                "account": "RentalAgreement"
+              }
+            ]
+          }
+        },
+        {
+          "name": "tenant",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "rental_agreement"
+          ]
+        },
+        {
+          "name": "landlord",
+          "writable": true,
+          "relations": [
+            "rental_agreement"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "resolve_maintenance_request",
+      "discriminator": [
+        255,
+        201,
+        45,
+        244,
+        181,
+        1,
+        132,
+        179
+      ],
+      "accounts": [
+        {
+          "name": "rental_agreement",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  110,
+                  116,
+                  97,
+                  108,
+                  95,
+                  97,
+                  103,
+                  114,
+                  101,
+                  101,
+                  109,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "landlord"
+              },
+              {
+                "kind": "account",
+                "path": "rental_agreement.tenant",
+                "account": "RentalAgreement"
+              },
+              {
+                "kind": "account",
+                "path": "rental_agreement.ipfs_cid",
+                "account": "RentalAgreement"
+              }
+            ]
+          }
+        },
+        {
+          "name": "landlord",
+          "signer": true,
+          "relations": [
+            "rental_agreement"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "request_index",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "submit_maintenance_request",
+      "discriminator": [
+        85,
+        11,
+        127,
+        211,
+        67,
+        168,
+        85,
+        7
+      ],
+      "accounts": [
+        {
+          "name": "rental_agreement",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  110,
+                  116,
+                  97,
+                  108,
+                  95,
+                  97,
+                  103,
+                  114,
+                  101,
+                  101,
+                  109,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "rental_agreement.landlord",
+                "account": "RentalAgreement"
+              },
+              {
+                "kind": "account",
+                "path": "tenant"
+              },
+              {
+                "kind": "account",
+                "path": "rental_agreement.ipfs_cid",
+                "account": "RentalAgreement"
+              }
+            ]
+          }
+        },
+        {
+          "name": "tenant",
+          "signer": true,
+          "relations": [
+            "rental_agreement"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "description",
+          "type": "string"
+        }
+      ]
+    },
+    {
       "name": "terminate_agreement",
       "discriminator": [
         208,
@@ -74,7 +397,45 @@
       "accounts": [
         {
           "name": "rental_agreement",
-          "writable": true
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  110,
+                  116,
+                  97,
+                  108,
+                  95,
+                  97,
+                  103,
+                  114,
+                  101,
+                  101,
+                  109,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "landlord"
+              },
+              {
+                "kind": "account",
+                "path": "tenant"
+              },
+              {
+                "kind": "account",
+                "path": "rental_agreement.ipfs_cid",
+                "account": "RentalAgreement"
+              }
+            ]
+          }
         },
         {
           "name": "landlord",
@@ -87,7 +448,10 @@
         {
           "name": "tenant",
           "writable": true,
-          "signer": true
+          "signer": true,
+          "relations": [
+            "rental_agreement"
+          ]
         },
         {
           "name": "system_program",
@@ -111,11 +475,48 @@
       "accounts": [
         {
           "name": "rental_agreement",
-          "writable": true
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  110,
+                  116,
+                  97,
+                  108,
+                  95,
+                  97,
+                  103,
+                  114,
+                  101,
+                  101,
+                  109,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "landlord"
+              },
+              {
+                "kind": "account",
+                "path": "tenant"
+              },
+              {
+                "kind": "account",
+                "path": "rental_agreement.ipfs_cid",
+                "account": "RentalAgreement"
+              }
+            ]
+          }
         },
         {
           "name": "landlord",
-          "writable": true,
           "signer": true,
           "relations": [
             "rental_agreement"
@@ -123,8 +524,10 @@
         },
         {
           "name": "tenant",
-          "writable": true,
-          "signer": true
+          "signer": true,
+          "relations": [
+            "rental_agreement"
+          ]
         }
       ],
       "args": [
@@ -170,7 +573,348 @@
       ]
     }
   ],
+  "events": [
+    {
+      "name": "AgreementCreated",
+      "discriminator": [
+        131,
+        148,
+        204,
+        18,
+        83,
+        92,
+        57,
+        18
+      ]
+    },
+    {
+      "name": "AgreementDefaulted",
+      "discriminator": [
+        72,
+        169,
+        50,
+        102,
+        162,
+        201,
+        73,
+        131
+      ]
+    },
+    {
+      "name": "AgreementTerminated",
+      "discriminator": [
+        100,
+        113,
+        135,
+        45,
+        62,
+        124,
+        25,
+        183
+      ]
+    },
+    {
+      "name": "AgreementUpdated",
+      "discriminator": [
+        96,
+        59,
+        191,
+        31,
+        127,
+        151,
+        49,
+        237
+      ]
+    },
+    {
+      "name": "MaintenanceRequestResolved",
+      "discriminator": [
+        202,
+        66,
+        224,
+        79,
+        163,
+        242,
+        220,
+        191
+      ]
+    },
+    {
+      "name": "MaintenanceRequestSubmitted",
+      "discriminator": [
+        152,
+        112,
+        15,
+        186,
+        191,
+        243,
+        20,
+        130
+      ]
+    },
+    {
+      "name": "RentPaid",
+      "discriminator": [
+        140,
+        29,
+        172,
+        69,
+        152,
+        38,
+        73,
+        241
+      ]
+    },
+    {
+      "name": "RentPaymentFailed",
+      "discriminator": [
+        115,
+        195,
+        101,
+        11,
+        34,
+        43,
+        244,
+        40
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "AgreementInactive",
+      "msg": "Rental agreement is inactive."
+    },
+    {
+      "code": 6001,
+      "name": "PaymentNotDue",
+      "msg": "Rent payment is not due yet."
+    },
+    {
+      "code": 6002,
+      "name": "InvalidAmount",
+      "msg": "Invalid amount specified."
+    },
+    {
+      "code": 6003,
+      "name": "InvalidDuration",
+      "msg": "Invalid duration specified."
+    },
+    {
+      "code": 6004,
+      "name": "InvalidIpfsCid",
+      "msg": "Invalid IPFS CID length."
+    },
+    {
+      "code": 6005,
+      "name": "ContractExpired",
+      "msg": "Contract has expired."
+    },
+    {
+      "code": 6006,
+      "name": "UnauthorizedTermination",
+      "msg": "Unauthorized termination attempt."
+    },
+    {
+      "code": 6007,
+      "name": "InvalidDescription",
+      "msg": "Invalid maintenance request description length."
+    },
+    {
+      "code": 6008,
+      "name": "InvalidRequestIndex",
+      "msg": "Invalid maintenance request index."
+    }
+  ],
   "types": [
+    {
+      "name": "AgreementCreated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "landlord",
+            "type": "pubkey"
+          },
+          {
+            "name": "tenant",
+            "type": "pubkey"
+          },
+          {
+            "name": "rent_amount",
+            "type": "u64"
+          },
+          {
+            "name": "deposit_amount",
+            "type": "u64"
+          },
+          {
+            "name": "duration_months",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AgreementDefaulted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agreement",
+            "type": "pubkey"
+          },
+          {
+            "name": "missed_payments",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AgreementTerminated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agreement",
+            "type": "pubkey"
+          },
+          {
+            "name": "remaining_deposit",
+            "type": "u64"
+          },
+          {
+            "name": "deductions",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AgreementUpdated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agreement",
+            "type": "pubkey"
+          },
+          {
+            "name": "rent_amount",
+            "type": "u64"
+          },
+          {
+            "name": "deposit_amount",
+            "type": "u64"
+          },
+          {
+            "name": "duration_months",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MaintenanceRequest",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "is_resolved",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MaintenanceRequestResolved",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agreement",
+            "type": "pubkey"
+          },
+          {
+            "name": "request_index",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MaintenanceRequestSubmitted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agreement",
+            "type": "pubkey"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RentPaid",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agreement",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "auto_deducted",
+            "type": "bool"
+          },
+          {
+            "name": "payment_date",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RentPaymentFailed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agreement",
+            "type": "pubkey"
+          },
+          {
+            "name": "required_amount",
+            "type": "u64"
+          },
+          {
+            "name": "available_balance",
+            "type": "u64"
+          },
+          {
+            "name": "missed_payments",
+            "type": "u8"
+          }
+        ]
+      }
+    },
     {
       "name": "RentalAgreement",
       "type": {
@@ -197,12 +941,38 @@
             "type": "u8"
           },
           {
+            "name": "start_date",
+            "type": "i64"
+          },
+          {
+            "name": "next_payment_date",
+            "type": "i64"
+          },
+          {
+            "name": "last_payment_date",
+            "type": "i64"
+          },
+          {
             "name": "ipfs_cid",
             "type": "string"
           },
           {
             "name": "is_active",
             "type": "bool"
+          },
+          {
+            "name": "missed_payments",
+            "type": "u8"
+          },
+          {
+            "name": "maintenance_requests",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "MaintenanceRequest"
+                }
+              }
+            }
           }
         ]
       }
