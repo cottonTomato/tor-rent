@@ -1,5 +1,5 @@
 {
-  "address": "coUnmi3oBUtwtd9fjeAvSsJssXh5A5xyPbhpewyzRVF",
+  "address": "Au1tsG1thDEY9gaGdh7CPDUbEE8J3G5ykBGQjQdD6vzt",
   "metadata": {
     "name": "torrent",
     "version": "0.1.0",
@@ -8,90 +8,84 @@
   },
   "instructions": [
     {
-      "name": "close",
+      "name": "create_agreement",
       "discriminator": [
-        98,
-        165,
-        201,
-        177,
-        108,
+        220,
+        156,
         65,
-        206,
-        96
+        172,
+        252,
+        68,
+        74,
+        233
       ],
       "accounts": [
         {
-          "name": "payer",
+          "name": "rental_agreement",
           "writable": true,
           "signer": true
         },
         {
-          "name": "torrent",
-          "writable": true
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "decrement",
-      "discriminator": [
-        106,
-        227,
-        168,
-        59,
-        248,
-        27,
-        150,
-        101
-      ],
-      "accounts": [
-        {
-          "name": "torrent",
-          "writable": true
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "increment",
-      "discriminator": [
-        11,
-        18,
-        104,
-        9,
-        104,
-        174,
-        59,
-        33
-      ],
-      "accounts": [
-        {
-          "name": "torrent",
-          "writable": true
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "initialize",
-      "discriminator": [
-        175,
-        175,
-        109,
-        31,
-        13,
-        152,
-        155,
-        237
-      ],
-      "accounts": [
-        {
-          "name": "payer",
+          "name": "landlord",
           "writable": true,
           "signer": true
         },
         {
-          "name": "torrent",
+          "name": "tenant",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "rent_amount",
+          "type": "u64"
+        },
+        {
+          "name": "deposit_amount",
+          "type": "u64"
+        },
+        {
+          "name": "duration_months",
+          "type": "u8"
+        },
+        {
+          "name": "ipfs_cid",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "terminate_agreement",
+      "discriminator": [
+        208,
+        216,
+        203,
+        98,
+        252,
+        183,
+        244,
+        247
+      ],
+      "accounts": [
+        {
+          "name": "rental_agreement",
+          "writable": true
+        },
+        {
+          "name": "landlord",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "rental_agreement"
+          ]
+        },
+        {
+          "name": "tenant",
           "writable": true,
           "signer": true
         },
@@ -103,55 +97,112 @@
       "args": []
     },
     {
-      "name": "set",
+      "name": "update_agreement",
       "discriminator": [
-        198,
-        51,
-        53,
-        241,
-        116,
-        29,
-        126,
-        194
+        231,
+        59,
+        90,
+        24,
+        226,
+        213,
+        155,
+        54
       ],
       "accounts": [
         {
-          "name": "torrent",
+          "name": "rental_agreement",
           "writable": true
+        },
+        {
+          "name": "landlord",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "rental_agreement"
+          ]
+        },
+        {
+          "name": "tenant",
+          "writable": true,
+          "signer": true
         }
       ],
       "args": [
         {
-          "name": "value",
-          "type": "u8"
+          "name": "rent_amount",
+          "type": {
+            "option": "u64"
+          }
+        },
+        {
+          "name": "deposit_amount",
+          "type": {
+            "option": "u64"
+          }
+        },
+        {
+          "name": "duration_months",
+          "type": {
+            "option": "u8"
+          }
+        },
+        {
+          "name": "ipfs_cid",
+          "type": {
+            "option": "string"
+          }
         }
       ]
     }
   ],
   "accounts": [
     {
-      "name": "Torrent",
+      "name": "RentalAgreement",
       "discriminator": [
-        255,
-        176,
-        4,
-        245,
-        188,
-        253,
-        124,
-        25
+        84,
+        206,
+        204,
+        146,
+        240,
+        218,
+        19,
+        14
       ]
     }
   ],
   "types": [
     {
-      "name": "Torrent",
+      "name": "RentalAgreement",
       "type": {
         "kind": "struct",
         "fields": [
           {
-            "name": "count",
+            "name": "landlord",
+            "type": "pubkey"
+          },
+          {
+            "name": "tenant",
+            "type": "pubkey"
+          },
+          {
+            "name": "rent_amount",
+            "type": "u64"
+          },
+          {
+            "name": "deposit_amount",
+            "type": "u64"
+          },
+          {
+            "name": "duration_months",
             "type": "u8"
+          },
+          {
+            "name": "ipfs_cid",
+            "type": "string"
+          },
+          {
+            "name": "is_active",
+            "type": "bool"
           }
         ]
       }
