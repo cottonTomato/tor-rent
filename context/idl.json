@@ -1,0 +1,211 @@
+{
+  "address": "Au1tsG1thDEY9gaGdh7CPDUbEE8J3G5ykBGQjQdD6vzt",
+  "metadata": {
+    "name": "torrent",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "create_agreement",
+      "discriminator": [
+        220,
+        156,
+        65,
+        172,
+        252,
+        68,
+        74,
+        233
+      ],
+      "accounts": [
+        {
+          "name": "rental_agreement",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "landlord",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "tenant",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "rent_amount",
+          "type": "u64"
+        },
+        {
+          "name": "deposit_amount",
+          "type": "u64"
+        },
+        {
+          "name": "duration_months",
+          "type": "u8"
+        },
+        {
+          "name": "ipfs_cid",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "terminate_agreement",
+      "discriminator": [
+        208,
+        216,
+        203,
+        98,
+        252,
+        183,
+        244,
+        247
+      ],
+      "accounts": [
+        {
+          "name": "rental_agreement",
+          "writable": true
+        },
+        {
+          "name": "landlord",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "rental_agreement"
+          ]
+        },
+        {
+          "name": "tenant",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "update_agreement",
+      "discriminator": [
+        231,
+        59,
+        90,
+        24,
+        226,
+        213,
+        155,
+        54
+      ],
+      "accounts": [
+        {
+          "name": "rental_agreement",
+          "writable": true
+        },
+        {
+          "name": "landlord",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "rental_agreement"
+          ]
+        },
+        {
+          "name": "tenant",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "rent_amount",
+          "type": {
+            "option": "u64"
+          }
+        },
+        {
+          "name": "deposit_amount",
+          "type": {
+            "option": "u64"
+          }
+        },
+        {
+          "name": "duration_months",
+          "type": {
+            "option": "u8"
+          }
+        },
+        {
+          "name": "ipfs_cid",
+          "type": {
+            "option": "string"
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "RentalAgreement",
+      "discriminator": [
+        84,
+        206,
+        204,
+        146,
+        240,
+        218,
+        19,
+        14
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "RentalAgreement",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "landlord",
+            "type": "pubkey"
+          },
+          {
+            "name": "tenant",
+            "type": "pubkey"
+          },
+          {
+            "name": "rent_amount",
+            "type": "u64"
+          },
+          {
+            "name": "deposit_amount",
+            "type": "u64"
+          },
+          {
+            "name": "duration_months",
+            "type": "u8"
+          },
+          {
+            "name": "ipfs_cid",
+            "type": "string"
+          },
+          {
+            "name": "is_active",
+            "type": "bool"
+          }
+        ]
+      }
+    }
+  ]
+}
