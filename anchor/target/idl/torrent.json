@@ -22,7 +22,45 @@
       "accounts": [
         {
           "name": "rental_agreement",
-          "writable": true
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  110,
+                  116,
+                  97,
+                  108,
+                  95,
+                  97,
+                  103,
+                  114,
+                  101,
+                  101,
+                  109,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "landlord"
+              },
+              {
+                "kind": "account",
+                "path": "tenant"
+              },
+              {
+                "kind": "account",
+                "path": "rental_agreement.ipfs_cid",
+                "account": "RentalAgreement"
+              }
+            ]
+          }
         },
         {
           "name": "tenant",
@@ -57,7 +95,43 @@
         {
           "name": "rental_agreement",
           "writable": true,
-          "signer": true
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  110,
+                  116,
+                  97,
+                  108,
+                  95,
+                  97,
+                  103,
+                  114,
+                  101,
+                  101,
+                  109,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "landlord"
+              },
+              {
+                "kind": "account",
+                "path": "tenant"
+              },
+              {
+                "kind": "arg",
+                "path": "ipfs_cid"
+              }
+            ]
+          }
         },
         {
           "name": "landlord",
@@ -108,7 +182,45 @@
       "accounts": [
         {
           "name": "rental_agreement",
-          "writable": true
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  110,
+                  116,
+                  97,
+                  108,
+                  95,
+                  97,
+                  103,
+                  114,
+                  101,
+                  101,
+                  109,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "landlord"
+              },
+              {
+                "kind": "account",
+                "path": "tenant"
+              },
+              {
+                "kind": "account",
+                "path": "rental_agreement.ipfs_cid",
+                "account": "RentalAgreement"
+              }
+            ]
+          }
         },
         {
           "name": "tenant",
@@ -143,7 +255,46 @@
       "accounts": [
         {
           "name": "rental_agreement",
-          "writable": true
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  110,
+                  116,
+                  97,
+                  108,
+                  95,
+                  97,
+                  103,
+                  114,
+                  101,
+                  101,
+                  109,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "landlord"
+              },
+              {
+                "kind": "account",
+                "path": "rental_agreement.tenant",
+                "account": "RentalAgreement"
+              },
+              {
+                "kind": "account",
+                "path": "rental_agreement.ipfs_cid",
+                "account": "RentalAgreement"
+              }
+            ]
+          }
         },
         {
           "name": "landlord",
@@ -175,7 +326,46 @@
       "accounts": [
         {
           "name": "rental_agreement",
-          "writable": true
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  110,
+                  116,
+                  97,
+                  108,
+                  95,
+                  97,
+                  103,
+                  114,
+                  101,
+                  101,
+                  109,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "rental_agreement.landlord",
+                "account": "RentalAgreement"
+              },
+              {
+                "kind": "account",
+                "path": "tenant"
+              },
+              {
+                "kind": "account",
+                "path": "rental_agreement.ipfs_cid",
+                "account": "RentalAgreement"
+              }
+            ]
+          }
         },
         {
           "name": "tenant",
@@ -207,7 +397,45 @@
       "accounts": [
         {
           "name": "rental_agreement",
-          "writable": true
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  110,
+                  116,
+                  97,
+                  108,
+                  95,
+                  97,
+                  103,
+                  114,
+                  101,
+                  101,
+                  109,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "landlord"
+              },
+              {
+                "kind": "account",
+                "path": "tenant"
+              },
+              {
+                "kind": "account",
+                "path": "rental_agreement.ipfs_cid",
+                "account": "RentalAgreement"
+              }
+            ]
+          }
         },
         {
           "name": "landlord",
@@ -247,7 +475,45 @@
       "accounts": [
         {
           "name": "rental_agreement",
-          "writable": true
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  110,
+                  116,
+                  97,
+                  108,
+                  95,
+                  97,
+                  103,
+                  114,
+                  101,
+                  101,
+                  109,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "landlord"
+              },
+              {
+                "kind": "account",
+                "path": "tenant"
+              },
+              {
+                "kind": "account",
+                "path": "rental_agreement.ipfs_cid",
+                "account": "RentalAgreement"
+              }
+            ]
+          }
         },
         {
           "name": "landlord",

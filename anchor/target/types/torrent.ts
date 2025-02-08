@@ -28,7 +28,45 @@ export type Torrent = {
       "accounts": [
         {
           "name": "rentalAgreement",
-          "writable": true
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  110,
+                  116,
+                  97,
+                  108,
+                  95,
+                  97,
+                  103,
+                  114,
+                  101,
+                  101,
+                  109,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "landlord"
+              },
+              {
+                "kind": "account",
+                "path": "tenant"
+              },
+              {
+                "kind": "account",
+                "path": "rental_agreement.ipfs_cid",
+                "account": "rentalAgreement"
+              }
+            ]
+          }
         },
         {
           "name": "tenant",
@@ -63,7 +101,43 @@ export type Torrent = {
         {
           "name": "rentalAgreement",
           "writable": true,
-          "signer": true
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  110,
+                  116,
+                  97,
+                  108,
+                  95,
+                  97,
+                  103,
+                  114,
+                  101,
+                  101,
+                  109,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "landlord"
+              },
+              {
+                "kind": "account",
+                "path": "tenant"
+              },
+              {
+                "kind": "arg",
+                "path": "ipfsCid"
+              }
+            ]
+          }
         },
         {
           "name": "landlord",
@@ -114,7 +188,45 @@ export type Torrent = {
       "accounts": [
         {
           "name": "rentalAgreement",
-          "writable": true
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  110,
+                  116,
+                  97,
+                  108,
+                  95,
+                  97,
+                  103,
+                  114,
+                  101,
+                  101,
+                  109,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "landlord"
+              },
+              {
+                "kind": "account",
+                "path": "tenant"
+              },
+              {
+                "kind": "account",
+                "path": "rental_agreement.ipfs_cid",
+                "account": "rentalAgreement"
+              }
+            ]
+          }
         },
         {
           "name": "tenant",
@@ -149,7 +261,46 @@ export type Torrent = {
       "accounts": [
         {
           "name": "rentalAgreement",
-          "writable": true
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  110,
+                  116,
+                  97,
+                  108,
+                  95,
+                  97,
+                  103,
+                  114,
+                  101,
+                  101,
+                  109,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "landlord"
+              },
+              {
+                "kind": "account",
+                "path": "rental_agreement.tenant",
+                "account": "rentalAgreement"
+              },
+              {
+                "kind": "account",
+                "path": "rental_agreement.ipfs_cid",
+                "account": "rentalAgreement"
+              }
+            ]
+          }
         },
         {
           "name": "landlord",
@@ -181,7 +332,46 @@ export type Torrent = {
       "accounts": [
         {
           "name": "rentalAgreement",
-          "writable": true
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  110,
+                  116,
+                  97,
+                  108,
+                  95,
+                  97,
+                  103,
+                  114,
+                  101,
+                  101,
+                  109,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "rental_agreement.landlord",
+                "account": "rentalAgreement"
+              },
+              {
+                "kind": "account",
+                "path": "tenant"
+              },
+              {
+                "kind": "account",
+                "path": "rental_agreement.ipfs_cid",
+                "account": "rentalAgreement"
+              }
+            ]
+          }
         },
         {
           "name": "tenant",
@@ -213,7 +403,45 @@ export type Torrent = {
       "accounts": [
         {
           "name": "rentalAgreement",
-          "writable": true
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  110,
+                  116,
+                  97,
+                  108,
+                  95,
+                  97,
+                  103,
+                  114,
+                  101,
+                  101,
+                  109,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "landlord"
+              },
+              {
+                "kind": "account",
+                "path": "tenant"
+              },
+              {
+                "kind": "account",
+                "path": "rental_agreement.ipfs_cid",
+                "account": "rentalAgreement"
+              }
+            ]
+          }
         },
         {
           "name": "landlord",
@@ -253,7 +481,45 @@ export type Torrent = {
       "accounts": [
         {
           "name": "rentalAgreement",
-          "writable": true
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  110,
+                  116,
+                  97,
+                  108,
+                  95,
+                  97,
+                  103,
+                  114,
+                  101,
+                  101,
+                  109,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "landlord"
+              },
+              {
+                "kind": "account",
+                "path": "tenant"
+              },
+              {
+                "kind": "account",
+                "path": "rental_agreement.ipfs_cid",
+                "account": "rentalAgreement"
+              }
+            ]
+          }
         },
         {
           "name": "landlord",

@@ -314,8 +314,20 @@ pub struct MaintenanceRequest {
 }
 
 #[derive(Accounts)]
+#[instruction(ipfs_cid: String)]
 pub struct CreateAgreement<'info> {
-    #[account(init, payer = landlord, space = ANCHOR_DISCRIMINATOR_SIZE + RentalAgreement::INIT_SPACE)]
+    #[account(
+        init,
+        payer = landlord,
+        space = ANCHOR_DISCRIMINATOR_SIZE + RentalAgreement::INIT_SPACE,
+        seeds = [
+            b"rental_agreement",
+            landlord.key().to_bytes().as_ref(),
+            tenant.key().to_bytes().as_ref(),
+            ipfs_cid.as_bytes(),
+        ],
+        bump
+    )]
     pub rental_agreement: Account<'info, RentalAgreement>,
     #[account(mut)]
     pub landlord: Signer<'info>,
@@ -326,7 +338,18 @@ pub struct CreateAgreement<'info> {
 
 #[derive(Accounts)]
 pub struct UpdateAgreement<'info> {
-    #[account(mut, has_one = landlord, has_one = tenant)]
+    #[account(
+        mut,
+        has_one = landlord,
+        has_one = tenant,
+        seeds = [
+            b"rental_agreement",
+            landlord.key().to_bytes().as_ref(),
+            tenant.key().to_bytes().as_ref(),
+            rental_agreement.ipfs_cid.as_bytes(),
+        ],
+        bump
+    )]
     pub rental_agreement: Account<'info, RentalAgreement>,
     pub landlord: Signer<'info>,
     pub tenant: Signer<'info>,
@@ -334,7 +357,18 @@ pub struct UpdateAgreement<'info> {
 
 #[derive(Accounts)]
 pub struct TerminateAgreement<'info> {
-    #[account(mut, has_one = landlord, has_one = tenant)]
+    #[account(
+        mut,
+        has_one = landlord,
+        has_one = tenant,
+        seeds = [
+            b"rental_agreement",
+            landlord.key().to_bytes().as_ref(),
+            tenant.key().to_bytes().as_ref(),
+            rental_agreement.ipfs_cid.as_bytes(),
+        ],
+        bump
+    )]
     pub rental_agreement: Account<'info, RentalAgreement>,
     #[account(mut)]
     pub landlord: Signer<'info>,
@@ -345,7 +379,18 @@ pub struct TerminateAgreement<'info> {
 
 #[derive(Accounts)]
 pub struct PayRent<'info> {
-    #[account(mut, has_one = tenant, has_one = landlord)]
+    #[account(
+        mut,
+        has_one = landlord,
+        has_one = tenant,
+        seeds = [
+            b"rental_agreement",
+            landlord.key().to_bytes().as_ref(),
+            tenant.key().to_bytes().as_ref(),
+            rental_agreement.ipfs_cid.as_bytes(),
+        ],
+        bump
+    )]
     pub rental_agreement: Account<'info, RentalAgreement>,
     #[account(mut)]
     pub tenant: Signer<'info>,
@@ -355,21 +400,52 @@ pub struct PayRent<'info> {
 
 #[derive(Accounts)]
 pub struct SubmitMaintenanceRequest<'info> {
-    #[account(mut, has_one = tenant)]
+    #[account(
+        mut,
+        has_one = tenant,
+        seeds = [
+            b"rental_agreement",
+            rental_agreement.landlord.to_bytes().as_ref(),
+            tenant.key().to_bytes().as_ref(),
+            rental_agreement.ipfs_cid.as_bytes()
+        ],
+        bump
+    )]
     pub rental_agreement: Account<'info, RentalAgreement>,
     pub tenant: Signer<'info>,
 }
 
 #[derive(Accounts)]
 pub struct ResolveMaintenanceRequest<'info> {
-    #[account(mut, has_one = landlord)]
+    #[account(
+        mut,
+        has_one = landlord,
+        seeds = [
+            b"rental_agreement",
+            landlord.key().to_bytes().as_ref(),
+            rental_agreement.tenant.to_bytes().as_ref(),
+            rental_agreement.ipfs_cid.as_bytes()
+        ],
+        bump
+    )]
     pub rental_agreement: Account<'info, RentalAgreement>,
     pub landlord: Signer<'info>,
 }
 
 #[derive(Accounts)]
 pub struct AutoDeductRent<'info> {
-    #[account(mut, has_one = tenant, has_one = landlord)]
+    #[account(
+        mut,
+        has_one = tenant,
+        has_one = landlord,
+        seeds = [
+            b"rental_agreement",
+            landlord.key().to_bytes().as_ref(),
+            tenant.key().to_bytes().as_ref(),
+            rental_agreement.ipfs_cid.as_bytes()
+        ],
+        bump
+    )]
     pub rental_agreement: Account<'info, RentalAgreement>,
     #[account(mut)]
     pub tenant: SystemAccount<'info>,
