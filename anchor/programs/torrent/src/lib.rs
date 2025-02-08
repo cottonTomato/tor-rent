@@ -1,6 +1,7 @@
 #![allow(clippy::result_large_err)]
 
 use anchor_lang::prelude::*;
+use anchor_lang::system_program;
 
 declare_id!("Au1tsG1thDEY9gaGdh7CPDUbEE8J3G5ykBGQjQdD6vzt");
 
@@ -18,25 +19,23 @@ pub mod torrent {
         rent_amount: u64,
         deposit_amount: u64,
         duration_months: u8,
-        ipfs_cid: String,
     ) -> Result<()> {
         require!(rent_amount > 0, TorrentError::InvalidAmount);
         require!(deposit_amount > 0, TorrentError::InvalidAmount);
         require!(duration_months > 0, TorrentError::InvalidDuration);
-        require!(
-            ipfs_cid.len() == IPFS_CID_V1_LENGTH && ipfs_cid.starts_with('b'),
-            TorrentError::InvalidIpfsCid
-        );
 
         let clock = Clock::get()?;
 
-        let transfer_amount = deposit_amount;
-        **ctx.accounts.tenant.try_borrow_mut_lamports()? -= transfer_amount;
-        **ctx
-            .accounts
-            .rental_agreement
-            .to_account_info()
-            .try_borrow_mut_lamports()? += transfer_amount;
+        system_program::transfer(
+            CpiContext::new(
+                ctx.accounts.system_program.to_account_info(),
+                system_program::Transfer {
+                    from: ctx.accounts.tenant.to_account_info(),
+                    to: ctx.accounts.rental_agreement.to_account_info(),
+                },
+            ),
+            deposit_amount,
+        )?;
 
         ctx.accounts.rental_agreement.set_inner(RentalAgreement {
             landlord: ctx.accounts.landlord.key(),
@@ -47,7 +46,6 @@ pub mod torrent {
             start_date: clock.unix_timestamp,
             next_payment_date: clock.unix_timestamp + SECONDS_PER_MONTH,
             last_payment_date: clock.unix_timestamp,
-            ipfs_cid,
             is_active: true,
             missed_payments: 0,
             maintenance_requests: Vec::new(),
@@ -69,7 +67,6 @@ pub mod torrent {
         rent_amount: Option<u64>,
         deposit_amount: Option<u64>,
         duration_months: Option<u8>,
-        ipfs_cid: Option<String>,
     ) -> Result<()> {
         let rental_agreement = &mut ctx.accounts.rental_agreement;
         require!(rental_agreement.is_active, TorrentError::AgreementInactive);
@@ -85,10 +82,6 @@ pub mod torrent {
         if let Some(duration) = duration_months {
             require!(duration > 0, TorrentError::InvalidDuration);
             rental_agreement.duration_months = duration;
-        }
-        if let Some(cid) = ipfs_cid {
-            require!(cid.len() <= 50, TorrentError::InvalidIpfsCid);
-            rental_agreement.ipfs_cid = cid;
         }
 
         emit!(AgreementUpdated {
@@ -120,10 +113,16 @@ pub mod torrent {
         let deduction = rental_agreement.missed_payments as u64 * rental_agreement.rent_amount;
         let remaining_deposit = rental_agreement.deposit_amount.saturating_sub(deduction);
 
-        **ctx.accounts.tenant.try_borrow_mut_lamports()? += remaining_deposit;
-        **rental_agreement
-            .to_account_info()
-            .try_borrow_mut_lamports()? -= remaining_deposit;
+        system_program::transfer(
+            CpiContext::new(
+                ctx.accounts.system_program.to_account_info(),
+                system_program::Transfer {
+                    from: ctx.accounts.tenant.to_account_info(),
+                    to: ctx.accounts.landlord.to_account_info(),
+                },
+            ),
+            remaining_deposit,
+        )?;
 
         if deduction > 0 {
             **ctx.accounts.landlord.try_borrow_mut_lamports()? += deduction;
@@ -158,8 +157,16 @@ pub mod torrent {
             rental_agreement.missed_payments += 1;
         }
 
-        **ctx.accounts.tenant.try_borrow_mut_lamports()? -= rental_agreement.rent_amount;
-        **ctx.accounts.landlord.try_borrow_mut_lamports()? += rental_agreement.rent_amount;
+        system_program::transfer(
+            CpiContext::new(
+                ctx.accounts.system_program.to_account_info(),
+                system_program::Transfer {
+                    from: ctx.accounts.tenant.to_account_info(),
+                    to: ctx.accounts.landlord.to_account_info(),
+                },
+            ),
+            rental_agreement.rent_amount,
+        )?;
 
         rental_agreement.last_payment_date = clock.unix_timestamp;
         rental_agreement.next_payment_date = clock.unix_timestamp + SECONDS_PER_MONTH;
@@ -180,13 +187,11 @@ pub mod torrent {
 
         require!(rental_agreement.is_active, TorrentError::AgreementInactive);
 
-        // Check if payment is due
         require!(
             clock.unix_timestamp >= rental_agreement.next_payment_date,
             TorrentError::PaymentNotDue
         );
 
-        // Check if contract hasn't expired
         let contract_end_date = rental_agreement.start_date
             + (rental_agreement.duration_months as i64 * SECONDS_PER_MONTH);
         require!(
@@ -194,14 +199,19 @@ pub mod torrent {
             TorrentError::ContractExpired
         );
 
-        // Get tenant's balance
         let tenant_balance = ctx.accounts.tenant.lamports();
 
-        // Check if tenant has sufficient funds
         if tenant_balance >= rental_agreement.rent_amount {
-            // Process the rent payment
-            **ctx.accounts.tenant.try_borrow_mut_lamports()? -= rental_agreement.rent_amount;
-            **ctx.accounts.landlord.try_borrow_mut_lamports()? += rental_agreement.rent_amount;
+            system_program::transfer(
+                CpiContext::new(
+                    ctx.accounts.system_program.to_account_info(),
+                    system_program::Transfer {
+                        from: ctx.accounts.tenant.to_account_info(),
+                        to: ctx.accounts.landlord.to_account_info(),
+                    },
+                ),
+                rental_agreement.rent_amount,
+            )?;
 
             rental_agreement.last_payment_date = clock.unix_timestamp;
             rental_agreement.next_payment_date = clock.unix_timestamp + SECONDS_PER_MONTH;
@@ -213,7 +223,6 @@ pub mod torrent {
                 auto_deducted: true,
             });
         } else {
-            // If insufficient funds, increment missed payments
             rental_agreement.missed_payments = rental_agreement.missed_payments.saturating_add(1);
 
             emit!(RentPaymentFailed {
@@ -223,7 +232,6 @@ pub mod torrent {
                 missed_payments: rental_agreement.missed_payments,
             });
 
-            // Check if missed payments exceed threshold
             if rental_agreement.missed_payments >= 3 {
                 emit!(AgreementDefaulted {
                     agreement: rental_agreement.key(),
@@ -296,8 +304,6 @@ pub struct RentalAgreement {
     pub start_date: i64,
     pub next_payment_date: i64,
     pub last_payment_date: i64,
-    #[max_len(50)]
-    pub ipfs_cid: String,
     pub is_active: bool,
     pub missed_payments: u8,
     #[max_len(10)]
@@ -314,7 +320,6 @@ pub struct MaintenanceRequest {
 }
 
 #[derive(Accounts)]
-#[instruction(ipfs_cid: String)]
 pub struct CreateAgreement<'info> {
     #[account(
         init,
@@ -324,7 +329,6 @@ pub struct CreateAgreement<'info> {
             b"rental_agreement",
             landlord.key().to_bytes().as_ref(),
             tenant.key().to_bytes().as_ref(),
-            ipfs_cid.as_bytes(),
         ],
         bump
     )]
@@ -346,7 +350,6 @@ pub struct UpdateAgreement<'info> {
             b"rental_agreement",
             landlord.key().to_bytes().as_ref(),
             tenant.key().to_bytes().as_ref(),
-            rental_agreement.ipfs_cid.as_bytes(),
         ],
         bump
     )]
@@ -365,7 +368,6 @@ pub struct TerminateAgreement<'info> {
             b"rental_agreement",
             landlord.key().to_bytes().as_ref(),
             tenant.key().to_bytes().as_ref(),
-            rental_agreement.ipfs_cid.as_bytes(),
         ],
         bump
     )]
@@ -387,7 +389,6 @@ pub struct PayRent<'info> {
             b"rental_agreement",
             landlord.key().to_bytes().as_ref(),
             tenant.key().to_bytes().as_ref(),
-            rental_agreement.ipfs_cid.as_bytes(),
         ],
         bump
     )]
@@ -396,6 +397,7 @@ pub struct PayRent<'info> {
     pub tenant: Signer<'info>,
     #[account(mut)]
     pub landlord: SystemAccount<'info>,
+    pub system_program: Program<'info, System>,
 }
 
 #[derive(Accounts)]
@@ -407,7 +409,6 @@ pub struct SubmitMaintenanceRequest<'info> {
             b"rental_agreement",
             rental_agreement.landlord.to_bytes().as_ref(),
             tenant.key().to_bytes().as_ref(),
-            rental_agreement.ipfs_cid.as_bytes()
         ],
         bump
     )]
@@ -424,7 +425,6 @@ pub struct ResolveMaintenanceRequest<'info> {
             b"rental_agreement",
             landlord.key().to_bytes().as_ref(),
             rental_agreement.tenant.to_bytes().as_ref(),
-            rental_agreement.ipfs_cid.as_bytes()
         ],
         bump
     )]
@@ -442,7 +442,6 @@ pub struct AutoDeductRent<'info> {
             b"rental_agreement",
             landlord.key().to_bytes().as_ref(),
             tenant.key().to_bytes().as_ref(),
-            rental_agreement.ipfs_cid.as_bytes()
         ],
         bump
     )]
@@ -451,6 +450,7 @@ pub struct AutoDeductRent<'info> {
     pub tenant: SystemAccount<'info>,
     #[account(mut)]
     pub landlord: SystemAccount<'info>,
+    pub system_program: Program<'info, System>,
 }
 
 #[event]

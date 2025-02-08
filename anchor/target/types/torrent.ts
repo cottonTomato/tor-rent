@@ -59,11 +59,6 @@ export type Torrent = {
               {
                 "kind": "account",
                 "path": "tenant"
-              },
-              {
-                "kind": "account",
-                "path": "rental_agreement.ipfs_cid",
-                "account": "rentalAgreement"
               }
             ]
           }
@@ -81,6 +76,10 @@ export type Torrent = {
           "relations": [
             "rentalAgreement"
           ]
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
         }
       ],
       "args": []
@@ -131,10 +130,6 @@ export type Torrent = {
               {
                 "kind": "account",
                 "path": "tenant"
-              },
-              {
-                "kind": "arg",
-                "path": "ipfsCid"
               }
             ]
           }
@@ -166,10 +161,6 @@ export type Torrent = {
         {
           "name": "durationMonths",
           "type": "u8"
-        },
-        {
-          "name": "ipfsCid",
-          "type": "string"
         }
       ]
     },
@@ -219,11 +210,6 @@ export type Torrent = {
               {
                 "kind": "account",
                 "path": "tenant"
-              },
-              {
-                "kind": "account",
-                "path": "rental_agreement.ipfs_cid",
-                "account": "rentalAgreement"
               }
             ]
           }
@@ -242,6 +228,10 @@ export type Torrent = {
           "relations": [
             "rentalAgreement"
           ]
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
         }
       ],
       "args": []
@@ -292,11 +282,6 @@ export type Torrent = {
               {
                 "kind": "account",
                 "path": "rental_agreement.tenant",
-                "account": "rentalAgreement"
-              },
-              {
-                "kind": "account",
-                "path": "rental_agreement.ipfs_cid",
                 "account": "rentalAgreement"
               }
             ]
@@ -364,11 +349,6 @@ export type Torrent = {
               {
                 "kind": "account",
                 "path": "tenant"
-              },
-              {
-                "kind": "account",
-                "path": "rental_agreement.ipfs_cid",
-                "account": "rentalAgreement"
               }
             ]
           }
@@ -434,11 +414,6 @@ export type Torrent = {
               {
                 "kind": "account",
                 "path": "tenant"
-              },
-              {
-                "kind": "account",
-                "path": "rental_agreement.ipfs_cid",
-                "account": "rentalAgreement"
               }
             ]
           }
@@ -512,11 +487,6 @@ export type Torrent = {
               {
                 "kind": "account",
                 "path": "tenant"
-              },
-              {
-                "kind": "account",
-                "path": "rental_agreement.ipfs_cid",
-                "account": "rentalAgreement"
               }
             ]
           }
@@ -553,12 +523,6 @@ export type Torrent = {
           "name": "durationMonths",
           "type": {
             "option": "u8"
-          }
-        },
-        {
-          "name": "ipfsCid",
-          "type": {
-            "option": "string"
           }
         }
       ]
@@ -957,10 +921,6 @@ export type Torrent = {
           {
             "name": "lastPaymentDate",
             "type": "i64"
-          },
-          {
-            "name": "ipfsCid",
-            "type": "string"
           },
           {
             "name": "isActive",

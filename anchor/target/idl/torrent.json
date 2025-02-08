@@ -53,11 +53,6 @@
               {
                 "kind": "account",
                 "path": "tenant"
-              },
-              {
-                "kind": "account",
-                "path": "rental_agreement.ipfs_cid",
-                "account": "RentalAgreement"
               }
             ]
           }
@@ -75,6 +70,10 @@
           "relations": [
             "rental_agreement"
           ]
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
         }
       ],
       "args": []
@@ -125,10 +124,6 @@
               {
                 "kind": "account",
                 "path": "tenant"
-              },
-              {
-                "kind": "arg",
-                "path": "ipfs_cid"
               }
             ]
           }
@@ -160,10 +155,6 @@
         {
           "name": "duration_months",
           "type": "u8"
-        },
-        {
-          "name": "ipfs_cid",
-          "type": "string"
         }
       ]
     },
@@ -213,11 +204,6 @@
               {
                 "kind": "account",
                 "path": "tenant"
-              },
-              {
-                "kind": "account",
-                "path": "rental_agreement.ipfs_cid",
-                "account": "RentalAgreement"
               }
             ]
           }
@@ -236,6 +222,10 @@
           "relations": [
             "rental_agreement"
           ]
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
         }
       ],
       "args": []
@@ -286,11 +276,6 @@
               {
                 "kind": "account",
                 "path": "rental_agreement.tenant",
-                "account": "RentalAgreement"
-              },
-              {
-                "kind": "account",
-                "path": "rental_agreement.ipfs_cid",
                 "account": "RentalAgreement"
               }
             ]
@@ -358,11 +343,6 @@
               {
                 "kind": "account",
                 "path": "tenant"
-              },
-              {
-                "kind": "account",
-                "path": "rental_agreement.ipfs_cid",
-                "account": "RentalAgreement"
               }
             ]
           }
@@ -428,11 +408,6 @@
               {
                 "kind": "account",
                 "path": "tenant"
-              },
-              {
-                "kind": "account",
-                "path": "rental_agreement.ipfs_cid",
-                "account": "RentalAgreement"
               }
             ]
           }
@@ -506,11 +481,6 @@
               {
                 "kind": "account",
                 "path": "tenant"
-              },
-              {
-                "kind": "account",
-                "path": "rental_agreement.ipfs_cid",
-                "account": "RentalAgreement"
               }
             ]
           }
@@ -547,12 +517,6 @@
           "name": "duration_months",
           "type": {
             "option": "u8"
-          }
-        },
-        {
-          "name": "ipfs_cid",
-          "type": {
-            "option": "string"
           }
         }
       ]
@@ -951,10 +915,6 @@
           {
             "name": "last_payment_date",
             "type": "i64"
-          },
-          {
-            "name": "ipfs_cid",
-            "type": "string"
           },
           {
             "name": "is_active",
