@@ -26,11 +26,11 @@ export default function Dashboard() {
     { name: "Bob Marshall", unit: "7A", status: "late", lastPayment: "2024-01-15" },
     { name: "Carol Smith", unit: "2C", status: "current", lastPayment: "2024-02-03" },
   ];
-  
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-800">
       <DashboardNav />
-      
+
       <main className="container mx-auto p-6">
         {/* Welcome Section */}
         <div className="mb-8 space-y-2">
@@ -48,9 +48,8 @@ export default function Dashboard() {
                 <div>
                   <p className="text-gray-400 text-sm mb-1">{stat.label}</p>
                   <p className="text-2xl font-bold text-white mb-2">{stat.value}</p>
-                  <span className={`text-sm ${
-                    stat.change.startsWith('+') ? 'text-green-400' : 'text-red-400'
-                  }`}>
+                  <span className={`text-sm ${stat.change.startsWith('+') ? 'text-green-400' : 'text-red-400'
+                    }`}>
                     {stat.change} from last month
                   </span>
                 </div>
@@ -74,7 +73,11 @@ export default function Dashboard() {
             </div>
             <div className="space-y-4">
               {tenants.map((tenant, idx) => (
-                <div key={idx} className="flex items-center justify-between p-4 bg-black/20 rounded-lg">
+                <div
+                  key={idx}
+                  className="flex items-center justify-between p-4 bg-black/20 rounded-lg cursor-pointer"
+                  onClick={() => (window.location.href = '/complaints-1')}
+                >
                   <div className="flex items-center space-x-4">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-700 to-gray-600 flex items-center justify-center">
                       {tenant.name.charAt(0)}
@@ -85,9 +88,12 @@ export default function Dashboard() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <span className={`px-3 py-1 rounded-full text-xs ${
-                      tenant.status === 'current' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
-                    }`}>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs ${tenant.status === 'current'
+                          ? 'bg-green-500/20 text-green-400'
+                          : 'bg-red-500/20 text-red-400'
+                        }`}
+                    >
                       {tenant.status}
                     </span>
                   </div>
@@ -108,10 +114,9 @@ export default function Dashboard() {
               {notifications.map((notif, idx) => (
                 <div key={idx} className="p-4 bg-black/20 rounded-lg space-y-2">
                   <div className="flex items-center space-x-2">
-                    <span className={`w-2 h-2 rounded-full ${
-                      notif.type === 'warning' ? 'bg-yellow-400' :
-                      notif.type === 'alert' ? 'bg-red-400' : 'bg-green-400'
-                    }`} />
+                    <span className={`w-2 h-2 rounded-full ${notif.type === 'warning' ? 'bg-yellow-400' :
+                        notif.type === 'alert' ? 'bg-red-400' : 'bg-green-400'
+                      }`} />
                     <p className="font-medium text-white">{notif.title}</p>
                   </div>
                   <p className="text-sm text-gray-400">{notif.desc}</p>
@@ -124,21 +129,23 @@ export default function Dashboard() {
         {/* Quick Actions */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { label: "Add Property", icon: Building2 },
-            { label: "New Contract", icon: FileText },
-            { label: "Schedule Inspection", icon: Calendar },
-            { label: "Report Issue", icon: AlertCircle }
+            { label: "Add Property", icon: Building2, link: "/add-property" },
+            { label: "New Contract", icon: FileText, link: "/new-contract" },
+            { label: "Schedule Inspection", icon: Calendar, link: "/inspection" },
+            { label: "Report Issue", icon: AlertCircle, link: "/report-issue" }
           ].map((action, idx) => (
             <Button
               key={idx}
               variant="ghost"
               className="bg-gradient-to-br from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 border border-gray-800 p-4 h-auto flex items-center justify-center space-x-2"
+              onClick={() => (window.location.href = action.link)} // Redirect on click
             >
               <action.icon className="w-5 h-5 text-white" />
               <span className="text-sm text-white">{action.label}</span>
             </Button>
           ))}
         </div>
+
       </main>
     </div>
   );
