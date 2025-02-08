@@ -313,6 +313,7 @@ const TenantDashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
       {/* Top Navigation */}
+      
       <nav className="border-b border-gray-800 bg-black/40 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto p-4">
           <div className="flex items-center justify-between">
