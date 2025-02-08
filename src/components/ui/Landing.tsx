@@ -127,7 +127,7 @@ function Scene() {
 export default function Component() {
   return (
     <div>
-      <div className={`relative w-full h-screen  text-white overflow-hidden ${manrope.className}`}>
+      <div className={`relative w-full h-screen text-white overflow-hidden ${manrope.className}`}>
       <header className="absolute top-0 left-0 right-0 z-10 p-4">
         <nav className="flex justify-center items-center max-w-6xl mx-auto">
           <div className="flex items-center">
