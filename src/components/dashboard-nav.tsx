@@ -18,12 +18,12 @@ export function DashboardNav() {
   ];
 
   return (
-    <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="border-b ">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
             <Link href="/dashboard" className="flex items-center">
-              <Building2 className="w-8 h-8 text-primary" />
+              <Building2 className="w-8 h-8" />
               <span className="ml-2 text-xl font-bold">Tor-Rent</span>
             </Link>
             <div className="hidden md:flex ml-8 space-x-4">
@@ -36,7 +36,7 @@ export function DashboardNav() {
                     className={cn(
                       "inline-flex items-center px-3 py-2 text-sm font-medium rounded-md",
                       pathname === item.href
-                        ? "text-primary bg-primary/10"
+                        ? "text-primary"
                         : "text-muted-foreground hover:text-primary hover:bg-primary/5"
                     )}
                   >

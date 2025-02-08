@@ -129,7 +129,7 @@ export default function Component() {
     <div>
       <div className={`relative w-full h-screen bg-black text-white overflow-hidden ${manrope.className}`}>
       <header className="absolute top-0 left-0 right-0 z-10 p-4">
-        <nav className="flex justify-between items-center max-w-6xl mx-auto">
+        <nav className="flex justify-center items-center max-w-6xl mx-auto">
           <div className="flex items-center">
             <div className="w-20 h-20">
               <Canvas camera={{ position: [0, 0, 5] }}>
@@ -138,14 +138,9 @@ export default function Component() {
                 <SpinningLogo />
               </Canvas>
             </div>
-            <span className="text-2xl font-bold">ChainSwitch</span>
+           
           </div>
-          <ul className="flex space-x-6">
-            <li><a href="#" className="hover:text-gray-300">Home</a></li>
-            <li><a href="#" className="hover:text-gray-300">Features</a></li>
-            <li><a href="#" className="hover:text-gray-300">Pricing</a></li>
-            <li><a href="#" className="hover:text-gray-300">Contact</a></li>
-          </ul>
+          
         </nav>
       </header>
       <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center z-10">
@@ -164,7 +159,7 @@ export default function Component() {
           <Link href="/register" className="bg-white text-black font-bold py-3 px-6 rounded-md hover:bg-gray-200 transition duration-300">
             Get Started
           </Link>
-          <a href="#features" className="border border-white py-3 px-6 rounded-md hover:bg-white/10 transition duration-300">
+          <a href="#features" className="border text-white border-white py-3 px-6 rounded-md hover:bg-white/10 transition duration-300">
             Learn More
           </a>
         </div>
