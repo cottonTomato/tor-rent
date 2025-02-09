@@ -12,7 +12,7 @@ torrent = "Au1tsG1thDEY9gaGdh7CPDUbEE8J3G5ykBGQjQdD6vzt"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
+cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]

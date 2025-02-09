@@ -23,7 +23,7 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return jsonify({"message": "Welcome to TorRent API!"})
 
 # Create User (Tenant or Landlord)
 @app.route("/create_user", methods=["POST"])

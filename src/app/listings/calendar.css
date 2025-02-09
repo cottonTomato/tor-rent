@@ -1,0 +1,12 @@
+.dark-calendar {
+    background-color: #111827 !important;
+    color: white !important;
+    border: 1px solid gray;
+  }
+  .dark-calendar .react-calendar__tile {
+    color: white;
+  }
+  .dark-calendar .react-calendar__tile--active {
+    background-color: gray !important;
+  }
+  
