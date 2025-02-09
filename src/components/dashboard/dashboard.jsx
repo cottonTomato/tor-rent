@@ -29,7 +29,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-800">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-900">
       <DashboardNav />
 
       <main className="container mx-auto p-6">
@@ -44,7 +44,7 @@ export default function Dashboard() {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {stats.map((stat, idx) => (
-            <Card key={idx} className="bg-gradient-to-br from-gray-900 to-gray-800 border-gray-800 p-6 rounded-xl">
+            <Card key={idx} className="bg-gradient-to-br from-black via-gray-900 to-gray-900 p-6 rounded-xl">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-400 text-sm mb-1">{stat.label}</p>
@@ -65,7 +65,7 @@ export default function Dashboard() {
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Tenants List */}
-          <Card className="lg:col-span-2 bg-gradient-to-br from-gray-900 to-gray-800 border-gray-800 p-6 rounded-xl">
+          <Card className="lg:col-span-2 bg-gradient-to-br from-black via-gray-900 to-gray-900 p-6 rounded-xl">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold text-white">Current Tenants</h2>
               <Button variant="ghost" className="text-gray-400 hover:text-white">
@@ -103,7 +103,7 @@ export default function Dashboard() {
             </div>
           </Card>
 
-          <Card className="bg-gradient-to-br from-gray-900 to-gray-800 border-gray-800 p-6 rounded-xl">
+          <Card className="bg-gradient-to-br from-black via-gray-900 to-gray-900 p-6 rounded-xl">
   <div className="flex items-center justify-between mb-6">
     <h2 className="text-xl font-semibold text-white">Notifications</h2>
     <Button variant="ghost" size="sm" className="text-gray-400">
@@ -148,7 +148,7 @@ export default function Dashboard() {
             <Button
               key={idx}
               variant="ghost"
-              className="bg-gradient-to-br from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 border border-gray-800 p-4 h-auto flex items-center justify-center space-x-2"
+              className="bg-gradient-to-br from-black via-gray-900 to-gray-900 hover:from-gray-700 hover:to-gray-800 border border-gray-800 p-4 h-auto flex items-center justify-center space-x-2"
               onClick={() => (window.location.href = action.link)} // Redirect on click
             >
               <action.icon className="w-5 h-5 text-white" />

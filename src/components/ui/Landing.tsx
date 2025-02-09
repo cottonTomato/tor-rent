@@ -136,7 +136,7 @@ function Scene() {
 
 export default function Component() {
   return (
-    <div>
+    <div className="pb-20">
       <div
         className={`relative w-full h-screen  text-white overflow-hidden ${manrope.className}`}
       >
@@ -186,36 +186,7 @@ export default function Component() {
         </a>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-8 my-40 max-w-6xl mx-auto text-white">
-        <div className="flex flex-col items-center bg-white/10 p-8 rounded-lg shadow-lg">
-          <div className="bg-white/10 p-3 rounded-lg mb-3">
-            <Shield className="w-6 h-6" />
-          </div>
-          <h3 className="font-semibold">Smart Contracts</h3>
-          <p className="text-sm text-gray-400">Unbreakable agreements</p>
-        </div>
-        <div className="flex flex-col items-center bg-white/10 p-8 rounded-lg shadow-lg">
-          <div className="bg-white/10 p-3 rounded-lg mb-3">
-            <Key className="w-6 h-6" />
-          </div>
-          <h3 className="font-semibold">Identity Verification</h3>
-          <p className="text-sm text-gray-400">Secure & trusted</p>
-        </div>
-        <div className="flex flex-col items-center bg-white/10 p-8 rounded-lg shadow-lg">
-          <div className="bg-white/10 p-3 rounded-lg mb-3">
-            <Building2 className="w-6 h-6" />
-          </div>
-          <h3 className="font-semibold">Property Management</h3>
-          <p className="text-sm text-gray-400">Simplified process</p>
-        </div>
-        <div className="flex flex-col items-center bg-white/10 p-8 rounded-lg shadow-lg">
-          <div className="bg-white/10 p-3 rounded-lg mb-3">
-            <Gavel className="w-6 h-6" />
-          </div>
-          <h3 className="font-semibold">Dispute Resolution</h3>
-          <p className="text-sm text-gray-400">Fair & transparent</p>
-        </div>
-      </div>
+     
     </div>
   );
 }
