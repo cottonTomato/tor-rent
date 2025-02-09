@@ -16,9 +16,10 @@ export default function Dashboard() {
   ];
 
   const notifications = [
-    { title: "Lease Renewal", desc: "3 contracts expiring next month", type: "warning" },
+    
     { title: "Maintenance Request", desc: "New request from Unit 4B", type: "alert" },
     { title: "Payment Received", desc: "Unit 7A rent processed", type: "success" },
+    { title: "Pulkit Chaudhary is willing a visit to Gokuldham, Andheri", desc: "Date request: 9th Feb 2025", type: "info" }
   ];
 
   const tenants = [
@@ -102,28 +103,38 @@ export default function Dashboard() {
             </div>
           </Card>
 
-          {/* Notifications Panel */}
           <Card className="bg-gradient-to-br from-gray-900 to-gray-800 border-gray-800 p-6 rounded-xl">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-white">Notifications</h2>
-              <Button variant="ghost" size="sm" className="text-gray-400">
-                <Bell className="w-4 h-4" />
-              </Button>
-            </div>
-            <div className="space-y-4">
-              {notifications.map((notif, idx) => (
-                <div key={idx} className="p-4 bg-black/20 rounded-lg space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <span className={`w-2 h-2 rounded-full ${notif.type === 'warning' ? 'bg-yellow-400' :
-                        notif.type === 'alert' ? 'bg-red-400' : 'bg-green-400'
-                      }`} />
-                    <p className="font-medium text-white">{notif.title}</p>
-                  </div>
-                  <p className="text-sm text-gray-400">{notif.desc}</p>
-                </div>
-              ))}
-            </div>
-          </Card>
+  <div className="flex items-center justify-between mb-6">
+    <h2 className="text-xl font-semibold text-white">Notifications</h2>
+    <Button variant="ghost" size="sm" className="text-gray-400">
+      <Bell className="w-4 h-4" />
+    </Button>
+  </div>
+  <div className="space-y-4">
+    {notifications.map((notif, idx) => (
+      <div
+        key={idx}
+        className="p-4 bg-black/20 rounded-lg space-y-2 cursor-pointer"
+        onClick={() => notif.type === "info" && (window.location.href = "renty")}
+      >
+        <div className="flex items-center space-x-2">
+          <span
+            className={`w-2 h-2 rounded-full ${
+              notif.type === "warning"
+                ? "bg-yellow-400"
+                : notif.type === "alert"
+                ? "bg-red-400"
+                : "bg-green-400"
+            }`}
+          />
+          <p className="font-medium text-white">{notif.title}</p>
+        </div>
+        <p className="text-sm text-gray-400">{notif.desc}</p>
+      </div>
+    ))}
+  </div>
+</Card>
+
         </div>
 
         {/* Quick Actions */}

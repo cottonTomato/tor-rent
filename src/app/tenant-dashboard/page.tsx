@@ -232,7 +232,7 @@ const TenantDashboard = () => {
       label: "View Documents",
       icon: FileText,
       color: "purple",
-      url: "/documents",
+      url: "/tenant-agreement",
     },
   ];
 
