@@ -1,8 +1,8 @@
 export const tenantKey = new Uint8Array([
-  101, 53, 251, 115, 220, 19, 222, 8, 153, 239, 223, 91, 107, 130, 196, 240,
-  219, 15, 140, 34, 118, 28, 14, 200, 214, 68, 226, 136, 209, 196, 143, 65, 24,
-  169, 253, 1, 24, 7, 197, 15, 104, 96, 235, 22, 103, 14, 55, 84, 8, 200, 63,
-  207, 150, 255, 161, 199, 185, 188, 178, 76, 110, 26, 125, 235,
+  31, 156, 183, 107, 9, 188, 238, 129, 225, 0, 104, 179, 248, 167, 138, 36, 178,
+  203, 138, 134, 23, 105, 43, 67, 228, 238, 89, 133, 86, 237, 102, 68, 126, 166,
+  23, 113, 147, 132, 229, 173, 190, 10, 30, 223, 239, 200, 30, 208, 62, 197,
+  179, 192, 194, 120, 41, 56, 113, 163, 88, 67, 30, 254, 91, 103,
 ]);
 
 // export const tenant3Key = new Uint8Array([
@@ -19,7 +19,7 @@ export const landlordKey = new Uint8Array([
   186, 147, 215, 240, 50, 83, 16, 45, 167, 0, 199, 102, 56,
 ]);
 
-export const tenantPublic = "2fH89eFdoaET9BVfrFrXYHCopEGKcychNKXjsk9arWFt";
+export const tenantPublic = "9XPGCsh3bNWUo9VFwSqPnZvUxs3UcSm4gNTLWPEY6Hrv";
 
 export const tenant3Public = "F6G6u69cw8BuJbAebacUVwEhYwB7p1cGjkPFe9XZ1A85";
 export const landlordPublic = "3ngMsRem1NaKvPWNt5fy6obYd6Pi6wW2zo16Shd2Chu9";

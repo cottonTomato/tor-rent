@@ -10,11 +10,7 @@ import {
   ConnectionProvider,
   WalletProvider,
 } from "@solana/wallet-adapter-react";
-import {
-  PhantomWalletAdapter,
-  SolflareWalletAdapter,
-  UnsafeBurnerWalletAdapter,
-} from "@solana/wallet-adapter-wallets";
+import { SolflareWalletAdapter } from "@solana/wallet-adapter-wallets";
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import { ReactNode, useCallback, useMemo } from "react";
 import { useCluster } from "../cluster/cluster-data-access";
@@ -29,7 +25,7 @@ export const WalletButton = dynamic(
   }
 );
 
-const wallets = [new SolflareWalletAdapter(), new UnsafeBurnerWalletAdapter()];
+const wallets = [new SolflareWalletAdapter()];
 
 export function SolanaProvider({ children }: { children: ReactNode }) {
   const { cluster } = useCluster();
