@@ -11,11 +11,11 @@ export function DashboardNav() {
 
   const navigation = [
     { name: "Dashboard", href: "/dashboard" },
-    { name: "Rental Agreements", href: "/agreements" },
-    { name: "Payments & Transactions", href: "/payments" },
-    { name: "Dispute Resolution", href: "/disputes" },
-    { name: "Identity Verification", href: "/verification" },
-    { name: "Support & Help Center", href: "/support" },
+    { name: "Rental Agreements", href: "/final-agreement" },
+    { name: "Payments & Transactions", href: "/all-payments" },
+    // { name: "Dispute Resolution", href: "/disputes" },
+    // { name: "Identity Verification", href: "/verification" },
+    // { name: "Support & Help Center", href: "/support" },
     { name: "Profile & Settings", href: "/settings" },
   ];
 

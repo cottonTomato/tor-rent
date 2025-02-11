@@ -3,8 +3,10 @@ import React, { useState } from 'react';
 import { Calendar, Clock, FileText, Check, X, ChevronRight } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { useRouter } from 'next/navigation';
 
 const MeetingApprovalFlow = () => {
+    const router = useRouter();
   const [step, setStep] = useState('approval'); // approval, agreement-prompt, agreement-form
   const [formData, setFormData] = useState({
     propertyAddress: '',
@@ -42,7 +44,7 @@ const MeetingApprovalFlow = () => {
     // Handle agreement submission
     console.log('Agreement details:', formData);
     alert('Agreement submitted successfully.');
-    window.location.href = '/final-agreement';
+    router.push("final-agreement");
     
   };
 

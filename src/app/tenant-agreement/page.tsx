@@ -8,8 +8,6 @@ import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import idl from "../../../anchor/target/idl/torrent.json";
 import { Torrent } from "../../../anchor/target/types/torrent";
 import * as anchor from "@coral-xyz/anchor";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 
 const RentalAgreementPage = () => {
   const [status, setStatus] = React.useState("PENDING");
@@ -73,26 +71,9 @@ const RentalAgreementPage = () => {
     console.log("RENTAL AGRIMENT: " + rentalAgreement.toString());
   };
 
-  const handleDownload = async () => {
+  const handleDownload = () => {
     setIsDownloading(true);
-  
-    const agreementElement = document.getElementById("rental-agreement");
-    if (!agreementElement) return;
-  
-    try {
-      const canvas = await html2canvas(agreementElement, { scale: 2 });
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-      const imgWidth = 210; // A4 width in mm
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-  
-      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
-      pdf.save("Rental_Agreement.pdf");
-    } catch (error) {
-      console.error("Error generating PDF:", error);
-    } finally {
-      setIsDownloading(false);
-    }
+    setTimeout(() => setIsDownloading(false), 1500);
   };
 
   const getStatusColor = () => {
@@ -107,7 +88,7 @@ const RentalAgreementPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-900 text-white p-8">
-      <div id="rental-agreement" className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2">Rental Agreement</h1>

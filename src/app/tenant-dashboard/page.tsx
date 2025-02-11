@@ -580,11 +580,10 @@ const TenantDashboard = () => {
                     </p>
                   </div>
                   <div
-                    className={`p-3 rounded-lg ${
-                      stat.alert
+                    className={`p-3 rounded-lg ${stat.alert
                         ? "bg-red-500/10 text-red-400"
                         : "bg-gray-800/50 text-gray-400"
-                    }`}
+                      }`}
                   >
                     <stat.icon className="w-6 h-6" />
                   </div>
@@ -603,7 +602,11 @@ const TenantDashboard = () => {
                 <CardTitle className="text-xl font-semibold text-white">
                   Upcoming Payments
                 </CardTitle>
-                <Button variant="ghost" className="text-gray-400">
+                <Button
+                  variant="ghost"
+                  className="text-gray-400"
+                  onClick={() => (window.location.href = "/payments1to1")}
+                >
                   View All <ChevronRight className="w-4 h-4 ml-2" />
                 </Button>
               </div>
@@ -631,13 +634,12 @@ const TenantDashboard = () => {
                         ₹{payment.amount}
                       </p>
                       <span
-                        className={`px-3 py-1 rounded-full text-xs ${
-                          payment.status === "upcoming"
+                        className={`px-3 py-1 rounded-full text-xs ${payment.status === "upcoming"
                             ? "bg-yellow-500/20 text-yellow-400"
                             : payment.status === "paid"
-                            ? "bg-green-500/20 text-green-400"
-                            : "bg-blue-500/20 text-blue-400"
-                        }`}
+                              ? "bg-green-500/20 text-green-400"
+                              : "bg-blue-500/20 text-blue-400"
+                          }`}
                       >
                         {payment.status}
                       </span>
@@ -669,13 +671,12 @@ const TenantDashboard = () => {
                   >
                     <div className="flex items-center space-x-2">
                       <span
-                        className={`w-2 h-2 rounded-full ${
-                          notif.type === "success"
+                        className={`w-2 h-2 rounded-full ${notif.type === "success"
                             ? "bg-green-400"
                             : notif.type === "warning"
-                            ? "bg-yellow-400"
-                            : "bg-blue-400"
-                        }`}
+                              ? "bg-yellow-400"
+                              : "bg-blue-400"
+                          }`}
                       />
                       <p className="font-medium text-white">{notif.title}</p>
                     </div>
